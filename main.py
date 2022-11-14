@@ -16,9 +16,9 @@ mLeft = Motor(Port.A)
 mRight = Motor(Port.B)
 mSensor = Motor(Port.C)
 sColor = ColorSensor(Port.S1)
-sInfra = InfraredSensor(Port.S2)
-sTouch1 = TouchSensor(Port.S3)
-sTouch2 = TouchSensor(Port.S4)
+sUltra = UltrasonicSensor(Port.S2)
+sTRight = TouchSensor(Port.S3)
+sTLeft = TouchSensor(Port.S4)
 
 # Write your program here.
-menu.main_menu(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2)
+menu.main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)

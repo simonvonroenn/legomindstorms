@@ -22,12 +22,8 @@ ev3 = EV3Brick()
 sections = ["FOLLOW", "SEARCH", "MOVE", "BRIDGE"]
 selec = 0
 
-def check_abort(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2):
-    if Button.LEFT in ev3.buttons.pressed():
-        main_menu(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2)
-
-def main_menu(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2):
-    bridge_main(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2) #testing
+def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
+    bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft) #testing
     global selec
 
     load_screen()
@@ -49,11 +45,11 @@ def main_menu(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2):
             if sections[selec] is 'FOLLOW':
                 ev3.screen.clear()
                 ev3.screen.print("Following line")
-                line_follower(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2)
+                line_follower(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
             elif sections[selec] is 'BRIDGE':
                 ev3.screen.clear()
                 ev3.screen.print("Bridge")
-                bridge_main(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2)
+                bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
             elif sections[selec] is 'MOVE':
                 pass
             elif sections[selec] is 'SEARCH':
