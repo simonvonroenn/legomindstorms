@@ -8,7 +8,7 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 
-def main(ev3, mLeft, mRight, sColor):
+def bridge_main(ev3, mLeft, mRight, sColor):
 
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
     # Set the drive speed at 100 millimeters per second.
@@ -24,6 +24,7 @@ def main(ev3, mLeft, mRight, sColor):
 
     while True:
         if sColor.color() == None:
-            robot.straight(-500)
-            robot.turn(90)
-        robot.straight(10)
+            robot.stop()
+            robot.straight(-150)
+            robot.turn(250)
+        robot.drive(1000, 0)

@@ -6,7 +6,6 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-from ...menu import check_abort
 
 
 #box subroutine
@@ -39,7 +38,6 @@ def line_follower(ev3, mLeft, mRight, sColor):
 
     # Start following the line endlessly.
     while True:
-        check_abort(ev3, mLeft, mRight, sColor)
 
 
         if sColor.reflection() >= threshold:
