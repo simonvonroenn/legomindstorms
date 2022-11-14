@@ -17,7 +17,7 @@ def gap_subroutine(color_sensor, drivebase):
 
 
 
-def line_follower(ev3, mLeft, mRight, sColor):
+def line_follower(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2):
     ev3.speaker.beep()
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
 

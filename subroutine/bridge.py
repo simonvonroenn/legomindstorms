@@ -8,19 +8,11 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 
-def bridge_main(ev3, mLeft, mRight, sColor):
+def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sInfra, sTouch1, sTouch2):
 
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
     # Set the drive speed at 100 millimeters per second.
     DRIVE_SPEED = 100
-
-    # Set the gain of the proportional line controller. This means that for every
-    # percentage point of light deviating from the threshold, we set the turn
-    # rate of the drivebase to 1.2 degrees per second.
-
-    # For example, if the light value deviates from the threshold by 10, the robot
-    # steers at 10*1.2 = 12 degrees per second.
-    PROPORTIONAL_GAIN = 1.2
 
     count = 0
     boost = 0
@@ -29,7 +21,7 @@ def bridge_main(ev3, mLeft, mRight, sColor):
             robot.stop()
             robot.straight(-200)
             robot.turn(270)
-        robot.drive(200 + 2*boost, 0)
+        robot.drive(DRIVE_SPEED + boost, 0)
         if count < 1000:
             count+=1
         else:
