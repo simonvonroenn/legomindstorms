@@ -27,6 +27,7 @@ def check_abort(ev3, mLeft, mRight, sColor):
         main_menu(ev3, mLeft, mRight, sColor)
 
 def main_menu(ev3, mLeft, mRight, sColor):
+    bridge_main(ev3, mLeft, mRight, sColor) #testing
     global selec
 
     load_screen()

@@ -22,9 +22,18 @@ def bridge_main(ev3, mLeft, mRight, sColor):
     # steers at 10*1.2 = 12 degrees per second.
     PROPORTIONAL_GAIN = 1.2
 
+    count = 0
+    boost = 0
     while True:
         if sColor.color() == None:
             robot.stop()
-            robot.straight(-150)
-            robot.turn(250)
-        robot.drive(1000, 0)
+            robot.straight(-200)
+            robot.turn(270)
+        robot.drive(200 + 2*boost, 0)
+        if count < 1000:
+            count+=1
+        else:
+            ev3.screen.print(robot.distance())
+            boost = 100 - robot.distance()
+            count = 0
+            robot.reset()
