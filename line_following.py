@@ -6,7 +6,6 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-from ...menu import check_abort
 
 
 #box subroutine
@@ -14,12 +13,12 @@ def box_subroutine(color_sensor, drivebase):
     pass
 
 def gap_subroutine(color_sensor, drivebase):
+
     pass
 
 
 
 def line_follower(ev3, mLeft, mRight, sColor):
-    ev3.speaker.beep()
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
 
     BLACK = 9
@@ -39,9 +38,6 @@ def line_follower(ev3, mLeft, mRight, sColor):
 
     # Start following the line endlessly.
     while True:
-        check_abort(ev3, mLeft, mRight, sColor)
-
-
         if sColor.reflection() >= threshold:
             robot.straight(10)
         else:
@@ -64,3 +60,9 @@ def line_follower(ev3, mLeft, mRight, sColor):
                         break
             if not line_found:
                 gap_subroutine(sColor, robot)
+
+
+            
+
+
+

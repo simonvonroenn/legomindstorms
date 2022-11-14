@@ -6,16 +6,26 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
+# import subroutine.bridge
+# import ./subroutine/follow
+# import ./subroutine/move
+from subroutine.follow import line_follower
+
 
 # Other Imports
 import math
+import time
 
 ev3 = EV3Brick()
 
 sections = ["FOLLOW", "SEARCH", "MOVE", "BRIDGE"]
 selec = 0
 
-def main_menu():
+def check_abort(ev3, mLeft, mRight, sColor):
+    if Button.LEFT in ev3.buttons.pressed():
+        main_menu(ev3, mLeft, mRight, sColor)
+
+def main_menu(ev3, mLeft, mRight, sColor):
     global selec
 
     load_screen()
@@ -32,8 +42,26 @@ def main_menu():
             else:
                 selec-=1
             load_screen()
-        while ev3.buttons.pressed():
-            wait = 1
+
+        if Button.RIGHT in ev3.buttons.pressed():
+            if sections[selec] is 'FOLLOW':
+                ev3.screen.clear()
+                ev3.screen.print("Following line")
+                line_follower(ev3, mLeft, mRight, sColor)
+            elif sections[selec] is 'BRIDGE':
+                pass
+            elif sections[selec] is 'MOVE':
+                pass
+            elif sections[selec] is 'SEARCH':
+                pass
+
+            else:
+               pass
+        
+        if Button.CENTER in ev3.buttons.pressed():
+            break
+
+            
 
 def load_screen():
     ev3.screen.clear()
@@ -42,4 +70,5 @@ def load_screen():
            ev3.screen.draw_text(20, 20 * i, sections[i])
     
     ev3.screen.draw_circle(5, 10 + 20 * selec, 5, True)
-    ev3.screen.draw_text(80, 80, selec)
+    #ev3.screen.draw_text(80, 80, selec)
+    time.sleep(0.25)

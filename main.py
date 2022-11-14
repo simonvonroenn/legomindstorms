@@ -8,7 +8,7 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 # Imports
-import framework
+import menu
 
 # Create your objects here.
 ev3 = EV3Brick()
@@ -17,4 +17,4 @@ mRight = Motor(Port.B)
 sColor = ColorSensor(Port.S1)
 
 # Write your program here.
-framework.main_menu()
+menu.main_menu(ev3, mLeft, mRight, sColor)
