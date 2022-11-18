@@ -7,7 +7,7 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 #from ...menu import check_abort
-import _thread
+
 
 RIGHT_ANGLE = 250
 
@@ -22,22 +22,32 @@ def stop_func(ev3):
 #box subroutine
 def box_subroutine(ev3, sColor, robot):
     mUS = Motor(Port.c)
-    sUS = UltrasonicSensor()
+    sUS = UltrasonicSensor(Port.S2)
+    BLACK = 9
+    WHITE = 85
+    threshold = (BLACK + WHITE) / 2
 
     #turn USSensor
     mUS.run_time(-RIGHT_ANGLE, 1)
     stop_func(ev3)
-        if stop:
-            break
+    if stop:
+        return
 
-    threshold = 100
-    while sUS.distance() < threshold:
+    max_distance = 100
+    while sUS.distance() < max_distance:
         robot.drive(1000,0)
+    stop_func(ev3)
+    if stop:
+        return
     
     robot.turn(-RIGHT_ANGLE)
     robot.straight(50)
 
-    while sUS.distance() < threshold:
+    stop_func(ev3)
+    if stop:
+        return
+
+    while sUS.distance() < max_distance:
         robot.drive(1000,0)
 
     robot.turn(-RIGHT_ANGLE)
@@ -47,6 +57,9 @@ def box_subroutine(ev3, sColor, robot):
 
 def gap_subroutine(ev3, color_sensor, drivebase):
     robot.turn(RIGHT_ANGLE)
+    BLACK = 9
+    WHITE = 85
+    threshold = (BLACK + WHITE) / 2
 
     while True:
         stop_func(ev3)
@@ -83,11 +96,37 @@ def gap_subroutine(ev3, color_sensor, drivebase):
                         break
             robot.turn(RIGHT_ANGLE)
 
+def line_follower_controller(ev3, mLeft, mRight, sColor):
+    sColor.mode = 'COL-REFLECT'  
+
+    speed = 360
+    dt = 500       # milliseconds
+    stop_action = "coast"
+
+    # initial measurment
+    target_value = sColor.value()
+
+    while True:
+
+        error = target_value - sColor.value()
+
+        y = 0.5 * error
+
+        if y >= 0:
+            mLeft.run_timed(time_sp=dt, speed_sp=speed + y, stop_action=stop_action)
+            mRight.run_timed(time_sp=dt, speed_sp=speed - y, stop_action=stop_action)
+        else:
+            mLeft.run_timed(time_sp=dt, speed_sp=speed - y, stop_action=stop_action)
+            mRight.run_timed(time_sp=dt, speed_sp=speed + y, stop_action=stop_action)
 
 
 def line_follower(ev3, mLeft, mRight, sColor):
     ev3.speaker.beep()
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
+    touchL = TouchSensor(Port.S3)
+    touchR = TouchSensor(Port.S4)
+
+
 
     BLACK = 9
     WHITE = 85
@@ -107,7 +146,8 @@ def line_follower(ev3, mLeft, mRight, sColor):
         if stop:
             break
         #check_abort(ev3, mLeft, mRight, sColor
-
+        #if touchL.value() or touchR.value():
+        #    box_subroutine(ev3, sColor, robot)
         if sColor.reflection() >= threshold:
             robot.drive(1000,0)
         else:
