@@ -62,6 +62,8 @@ def gap_subroutine(ev3, color_sensor, drivebase):
     threshold = (BLACK + WHITE) / 2
 
     while True:
+        if line_found:
+            break
         stop_func(ev3)
         if stop:
             break
@@ -98,6 +100,8 @@ def gap_subroutine(ev3, color_sensor, drivebase):
 
 def line_follower_controller(ev3, mLeft, mRight, sColor):
     sColor.mode = 'COL-REFLECT'  
+    touchL = TouchSensor(Port.S3)
+    touchR = TouchSensor(Port.S4)
 
     speed = 360
     dt = 500       # milliseconds
@@ -106,9 +110,22 @@ def line_follower_controller(ev3, mLeft, mRight, sColor):
     # initial measurment
     target_value = sColor.value()
 
+    #used to detect 90° curve or gap 
+    error_counter = 0
+    #arbitrary number for small enough error
+    eps = 1
+
     while True:
+        if touchL.pressed() or touchR.pressed():
+            box_subroutine(ev3, sColor, robot)
 
         error = target_value - sColor.value()
+
+        if error > eps:
+            error_counter += 1
+            #now resets after two consecutive large errors
+            if error_counter >= 2:
+                gap_subroutine(ev3, sColor, DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104))
 
         y = 0.5 * error
 
@@ -146,8 +163,8 @@ def line_follower(ev3, mLeft, mRight, sColor):
         if stop:
             break
         #check_abort(ev3, mLeft, mRight, sColor
-        #if touchL.value() or touchR.value():
-        #    box_subroutine(ev3, sColor, robot)
+        if touchL.pressed() or touchR.pressed():
+            box_subroutine(ev3, sColor, robot)
         if sColor.reflection() >= threshold:
             robot.drive(1000,0)
         else:
