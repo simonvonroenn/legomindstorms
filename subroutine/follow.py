@@ -9,7 +9,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 #from ...menu import check_abort
 
 
-RIGHT_ANGLE = 250
+RIGHT_ANGLE = 280
 
 
 global stop
@@ -55,87 +55,116 @@ def box_subroutine(ev3, sColor, robot):
     while sColor.reflection() <= threshold:
         robot.drive(1000,0)
 
-def gap_subroutine(ev3, color_sensor, drivebase):
-    robot.turn(RIGHT_ANGLE)
-    BLACK = 9
-    WHITE = 85
-    threshold = (BLACK + WHITE) / 2
+def gap_subroutine(ev3, color_sensor, mLeft, mRight):
+    #drivebase.turn(RIGHT_ANGLE)
+    robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
+    robot.settings(360, 360, 1000, 360)
 
+    speed = 360
+    time = 500  
+    BLACK = 8
+    WHITE = 60
+    threshold = 24
+    line_found = 0
     while True:
         if line_found:
+            robot.stop()
             break
         stop_func(ev3)
         if stop:
+            robot.stop()
             break
 
-        if sColor.reflection() >= threshold:
+        if color_sensor.reflection() >= threshold:
             break
         else:
-
-            robot.straight(50)
             total_angle = 0
             line_found = 0
             #turn 90 deg left
-            while total_angle <= RIGHT_ANGLE:
+            while total_angle < RIGHT_ANGLE:
                 stop_func(ev3)
                 if stop:
                     break
-                robot.turn(10)
-                total_angle += 10
-                if sColor.reflection() >= threshold:
+                #mLeft.run_time(300, time, Stop.COAST)
+                #mRight.run_time(-200, time, Stop.COAST)
+                robot.turn(20)
+                total_angle += 20
+                if color_sensor.reflection() >= threshold:
                     line_found = 1
                     break
             #turn 180 deg right
-            if total_angle >= RIGHT_ANGLE:
-                while total_angle > -RIGHT_ANGLE:
-                    stop_func(ev3)
-                    if stop:
-                        break
-                    robot.turn(-10)
-                    total_angle -= 10
-                    if sColor.reflection() >= threshold:
-                        line_found = 1
-                        break
-            robot.turn(RIGHT_ANGLE)
+            while total_angle > -(RIGHT_ANGLE + 20):
+                stop_func(ev3)
+                if stop:
+                    break
+                #mLeft.run_time(-200, time, Stop.COAST)
+                #mRight.run_time(300, time, Stop.COAST)
+                robot.turn(-20)
+                total_angle -= 20
+                if color_sensor.reflection() >= threshold:
+                    line_found = 1
+                    break
+            if not line_found:
+                #mLeft.run_time(300, time * RIGHT_ANGLE / 10, Stop.COAST)
+                #mRight.run_time(-300, time * RIGHT_ANGLE / 10, Stop.COAST)
 
-def line_follower_controller(ev3, mLeft, mRight, sColor):
-    sColor.mode = 'COL-REFLECT'  
+                robot.turn(RIGHT_ANGLE)
+                robot.straight(50)
+
+                #mLeft.run_time(600, time, Stop.COAST)
+                #mRight.run_time(600, time, Stop.COAST)
+            #drivebase.turn(RIGHT_ANGLE)
+
+def line_follower_controller(ev3, mLeft, mRight, sColor):  
     touchL = TouchSensor(Port.S3)
     touchR = TouchSensor(Port.S4)
 
     speed = 360
-    dt = 500       # milliseconds
-    stop_action = "coast"
+    time = 500       # milliseconds
 
     # initial measurment
-    target_value = sColor.value()
+    target_value = 34
+    brown = 8
+    white = 60
+
 
     #used to detect 90° curve or gap 
     error_counter = 0
     #arbitrary number for small enough error
     eps = 1
-
+    print(sColor.reflection())
+    robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
     while True:
         if touchL.pressed() or touchR.pressed():
             box_subroutine(ev3, sColor, robot)
 
-        error = target_value - sColor.value()
+        error = white - sColor.reflection()
 
-        if error > eps:
-            error_counter += 1
-            #now resets after two consecutive large errors
-            if error_counter >= 2:
-                gap_subroutine(ev3, sColor, DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104))
+        #if sColor.reflection >= 52:
+        #    gap_subroutine(ev3, sColor, DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104))
 
-        y = 0.5 * error
+        #y = error
+        # if error >= 10 and error <= 32:
+        #     print("drives right")
+        #     mLeft.run_time(100, time, Stop.COAST)
+        #     mRight.run_time(600, time, Stop.COAST)
+        # elif error > 32 and error < 50:
+        #     robot.straight(50)
+        #     robot.stop()
+        #     print("drives straight")
+        # elif error < 10:
+        #     print("drives left")
+        #     mLeft.run_time(600, time, Stop.COAST)
+        #     mRight.run_time(100, time, Stop.COAST)
 
-        if y >= 0:
-            mLeft.run_timed(time_sp=dt, speed_sp=speed + y, stop_action=stop_action)
-            mRight.run_timed(time_sp=dt, speed_sp=speed - y, stop_action=stop_action)
+        if error <= 32:
+            robot.straight(50)
+            robot.stop()
+            #mLeft.run_time(600, time, Stop.COAST)
+            #mRight.run_time(600, time, Stop.COAST)
         else:
-            mLeft.run_timed(time_sp=dt, speed_sp=speed - y, stop_action=stop_action)
-            mRight.run_timed(time_sp=dt, speed_sp=speed + y, stop_action=stop_action)
-
+            print("gap")
+            gap_subroutine(ev3, sColor, mLeft, mRight)
 
 def line_follower(ev3, mLeft, mRight, sColor):
     ev3.speaker.beep()
@@ -192,4 +221,4 @@ def line_follower(ev3, mLeft, mRight, sColor):
                         line_found = 1
                         break
             if not line_found:
-                gap_subroutine(sColor, robot)
+                gap_subroutine(sColor, mLeft, mRight)

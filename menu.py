@@ -9,7 +9,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 # import subroutine.bridge
 # import ./subroutine/follow
 # import ./subroutine/move
-from subroutine.follow import line_follower
+from subroutine.follow import line_follower, line_follower_controller
 from subroutine.bridge import bridge_main
 
 
@@ -49,7 +49,7 @@ def main_menu(ev3, mLeft, mRight, sColor):
             if sections[selec] is 'FOLLOW':
                 ev3.screen.clear()
                 ev3.screen.print("Following line")
-                line_follower(ev3, mLeft, mRight, sColor)
+                line_follower_controller(ev3, mLeft, mRight, sColor)
             elif sections[selec] is 'BRIDGE':
                 ev3.screen.clear()
                 ev3.screen.print("Bridge")
