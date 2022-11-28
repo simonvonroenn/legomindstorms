@@ -11,26 +11,31 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
 
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
+
     # Set the drive speed at 100 millimeters per second.
     DRIVE_SPEED = 100
 
+    # Variables for adjusting speed
     count = 0
     boost = 0
 
     # Turns the robot by 180°
     robot.straight(-200)
-    robot.turn(560)
+    robot.turn(580)
 
     # Orientates the Infrared Sensor correctly
     mSensor.run_target(20, 90)
 
-    while True:
+    while sColor.color() != Color.BLUE:
+        # Checks if there is an abyss
         if sUltra.distance() > 100:
             robot.stop()
-            robot.straight(-200)
-            robot.turn(280)
+            robot.straight(150)
+            robot.turn(290)
+        # Drives
         robot.drive(-1 * (DRIVE_SPEED + boost), 0)
         ev3.screen.print(sUltra.distance())
+        # Changes the speed based on the slope of the track
         if count < 1000:
             count+=1
         else:
@@ -42,5 +47,4 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     mSensor.run_target(10, -90)
 
     # Undo robot rotation
-    robot.straight(200)
-    robot.turn(540)
+    robot.turn(580)
