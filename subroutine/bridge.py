@@ -19,15 +19,15 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     count = 0
     boost = 0
 
-    # Turns the robot by 180°
-    robot.straight(-200)
-    robot.turn(580)
+    # Takes a step back and turns the robot by 180°
+    #robot.straight(-200)
+    #robot.turn(580)
 
     # Orientates the Infrared Sensor correctly
-    mSensor.run_target(20, 90)
+    #mSensor.run_target(20, 90)
 
     while sColor.color() != Color.BLUE:
-        # Checks if there is an abyss
+        # Checks if there is an abyss and turns left if so
         if sUltra.distance() > 100:
             robot.stop()
             robot.straight(150)
@@ -42,9 +42,11 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             boost = 100 - robot.distance()
             count = 0
             robot.reset()
-    
+
+    robot.stop()
+
     # Undo Infrared Sensor orientation
-    mSensor.run_target(10, -90)
+    #mSensor.run_target(10, -90)
 
     # Undo robot rotation
-    robot.turn(580)
+    #robot.turn(580)
