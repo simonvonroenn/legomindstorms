@@ -19,6 +19,9 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     count = 0
     boost = 0
 
+    # This variable checks whether the robot passed the first blue line at the start of the parcour.
+    first_blue_line = False
+
     # Takes a step back and turns the robot by 180°
     #robot.straight(-200)
     #robot.turn(580)
@@ -26,12 +29,13 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     # Orientates the Infrared Sensor correctly
     #mSensor.run_target(20, 90)
 
-    while sColor.color() != Color.BLUE:
-        # Checks if there is an abyss and turns left if so
+    while not first_blue_line or sColor.color() != Color.BLUE:
+        # Checks if there is an abyss and turns left if so (also acknoledges that first blue line has been passed)
         if sUltra.distance() > 100:
             robot.stop()
             robot.straight(150)
             robot.turn(290)
+            first_blue_line = True
         # Drives
         robot.drive(-1 * (DRIVE_SPEED + boost), 0)
         ev3.screen.print(sUltra.distance())
