@@ -33,17 +33,18 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
         # Checks if there is an abyss and turns left if so (also acknoledges that first blue line has been passed)
         if sUltra.distance() > 100:
             robot.stop()
-            robot.straight(150)
-            robot.turn(290)
+            robot.straight(110)
+            robot.turn(280)
             first_blue_line = True
         # Drives
         robot.drive(-1 * (DRIVE_SPEED + boost), 0)
-        ev3.screen.print(sUltra.distance())
+        #ev3.screen.print(count)
         # Changes the speed based on the slope of the track
-        if count < 1000:
+        if count < 100:
             count+=1
         else:
-            boost = 100 - robot.distance()
+            #ev3.screen.print(robot.distance())
+            boost = 50 + robot.distance()
             count = 0
             robot.reset()
 
