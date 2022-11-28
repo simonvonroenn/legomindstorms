@@ -14,7 +14,11 @@ import menu
 ev3 = EV3Brick()
 mLeft = Motor(Port.A)
 mRight = Motor(Port.B)
+mSensor = Motor(Port.C)
 sColor = ColorSensor(Port.S1)
+sUltra = UltrasonicSensor(Port.S2)
+sTRight = TouchSensor(Port.S3)
+sTLeft = TouchSensor(Port.S4)
 
 # Write your program here.
-menu.main_menu(ev3, mLeft, mRight, sColor)
+menu.main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)

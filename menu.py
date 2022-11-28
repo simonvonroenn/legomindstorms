@@ -21,11 +21,7 @@ ev3 = EV3Brick()
 sections = ["FOLLOW", "SEARCH", "MOVE", "BRIDGE"]
 selec = 0
 
-def check_abort(ev3, mLeft, mRight, sColor):
-    if Button.LEFT in ev3.buttons.pressed():
-        main_menu(ev3, mLeft, mRight, sColor)
-
-def main_menu(ev3, mLeft, mRight, sColor):
+def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     global selec
 
     load_screen()
