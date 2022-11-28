@@ -10,7 +10,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 # import ./subroutine/follow
 # import ./subroutine/move
 from subroutine.follow import line_follower, line_follower_controller
-from subroutine.bridge import bridge_main
+#from subroutine.bridge import bridge_main
 
 
 # Other Imports
