@@ -22,7 +22,7 @@ def driveToWall(ev3, robot, sTRight, sTLeft, sUltra):
         else:
             robot.drive(DRIVE_SPEED, 0)
         distToCenter = sUltra.distance() - 200
-        orientate = distToCenter - prevDist + 20
+        orientate = distToCenter - prevDist + (10 if distToCenter > 200 else -10)
         
 
 def wallTurn(robot):
