@@ -21,7 +21,7 @@ def orientate(ev3, robot, sUltra):
     robot.turn(ANGLE_OFFSET)
 
 def driveToWall(ev3, robot, sTRight, sTLeft, sUltra):
-    CENTER_DISTANCE = 60
+    CENTER_DISTANCE = 50
     DRIVE_UNIT = 200
     ADJUSTMENT_PER_UNIT = 20
     ADJUSTMENT_PRECISION = 3
@@ -64,7 +64,7 @@ def move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     # while True:
     #     ev3.screen.print(sUltra.distance())
     orientate(ev3, robot, sUltra)
-    # driveToWall(ev3, robot, sTRight, sTLeft, sUltra)
-    # wallTurn(robot, DRIVE_SPEED)
-    # findBox(robot, sUltra, sTRight, sTLeft, DRIVE_SPEED)
-    # moveBoxToWall(robot)
+    driveToWall(ev3, robot, sTRight, sTLeft, sUltra)
+    wallTurn(robot, DRIVE_SPEED)
+    findBox(robot, sUltra, sTRight, sTLeft, DRIVE_SPEED)
+    moveBoxToWall(robot)
