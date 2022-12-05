@@ -9,8 +9,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 #from ...menu import check_abort
 
 
-RIGHT_ANGLE = 280
-
+RIGHT_ANGLE = 290 #480 #320
 
 global stop
 stop = False
@@ -63,59 +62,117 @@ def box_subroutine(ev3, sColor, robot):
 def gap_subroutine(ev3, color_sensor, mLeft, mRight):
     #drivebase.turn(RIGHT_ANGLE)
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
-    robot.settings(360, 360, 100, 360)
+    robot.settings(360, 360, 200, 360)
 
     speed = 360
     time = 500  
     BLACK = 8
     WHITE = 60
-    threshold = 24
+    threshold = 35
 
-    while True:
-        robot.reset()
-        #if stop_func(ev3):
-        #    return
+    while color_sensor.reflection() < threshold:
+        
+        CURR_ANGLE = 40 #1/8 of 90 deg
+        #i = 0
 
-        if color_sensor.reflection() >= threshold:
-            return
-        else:
-            total_angle = 0
-            #turn 90 deg left
+        angles = [40,80,160]
+
+        for i in angles:
+            if color_sensor.reflection() >= threshold:
+                return
+            robot.reset()
             robot.drive(0, 200)
             while True:
+                #ev3.screen.print(color_sensor.reflection())
                 if color_sensor.reflection() >= threshold:
                     robot.stop()
                     #line was found, return to line following subroutine
                     return
-                elif robot.angle() >= RIGHT_ANGLE:
+                elif robot.angle() >= i + 30:
+                    ev3.screen.print(robot.angle())
                     robot.stop()
                     break
 
             robot.drive(0, -200)
             while True:
+                #ev3.screen.print(color_sensor.reflection())
                 if color_sensor.reflection() >= threshold:
-                    robot.stop()
-                    robot.turn(20)
                     robot.stop()
                     #line was found, return to line following subroutine
                     return
-                elif robot.angle() <= -RIGHT_ANGLE:
+                elif robot.angle() <= -i:
+                    ev3.screen.print(robot.angle())
                     robot.stop()
                     break
+            
+            robot.turn(i)
 
-        robot.turn(RIGHT_ANGLE - 10)
-        robot.straight(250)
-        robot.stop()
+
+        # while CURR_ANGLE <= RIGHT_ANGLE :
+        #     #ev3.screen.print(color_sensor.reflection())
+        #     if color_sensor.reflection() >= threshold:
+        #         return
+
+
+
+        #     robot.reset()
+        #     total_angle = 0
+        #     if i % 2 == 0:    
+        #         robot.drive(0, 200)
+        #         while True:
+        #             #ev3.screen.print(color_sensor.reflection())
+        #             if color_sensor.reflection() >= threshold:
+        #                 robot.stop()
+        #                 #line was found, return to line following subroutine
+        #                 return
+        #             elif robot.angle() >= CURR_ANGLE:
+        #                 ev3.screen.print(robot.angle())
+        #                 robot.stop()
+        #                 break
+        #     else:
+        #         temp_angle = CURR_ANGLE +40
+        #         robot.drive(0, -200)
+        #         while True:
+        #             #ev3.screen.print(color_sensor.reflection())
+        #             if color_sensor.reflection() >= threshold:
+        #                 robot.stop()
+        #                 #line was found, return to line following subroutine
+        #                 return
+        #             elif robot.angle() <= -temp_angle:
+        #                 ev3.screen.print(robot.angle())
+        #                 robot.stop()
+        #                 break
+            
+        #     if i < 2:
+        #         #ev3.screen.print(-CURR_ANGLE)
+        #         CURR_ANGLE *= 2
+        #         #ev3.screen.print(CURR_ANGLE)
+        #     else:
+        #         #ev3.screen.print(-CURR_ANGLE)
+        #         CURR_ANGLE += 80
+        #         #ev3.screen.print(CURR_ANGLE)
+            
+        #     i += 1
+
+
+        if color_sensor.reflection() <= threshold:
+           # robot.turn(RIGHT_ANGLE)
+            robot.straight(250)
+            robot.stop()     
+        
+
+
+   
 
 def line_follower_controller(ev3, mLeft, mRight, sColor):  
     touchL = TouchSensor(Port.S3)
     touchR = TouchSensor(Port.S4)
 
-    speed = 400
+    speed = 700
     time = 400       # milliseconds
 
     # initial measurment
-    target_value = 30
+    target_value = 35
     brown = 8
     white = 60
 
@@ -157,12 +214,12 @@ def line_follower_controller(ev3, mLeft, mRight, sColor):
 
         if y >= 0:
             #robot.drive(speed, y)
-            print("right")
+            print("left")
             mLeft.run_time(speed, time - y, wait=True)
             mRight.run_time(speed, time + y, wait=True)
 
         else:
-            print("left")
+            print("right")
             mLeft.run_time(speed, time + y, wait=True)
             mRight.run_time(speed, time - y, wait=True)
 
