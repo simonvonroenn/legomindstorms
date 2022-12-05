@@ -8,21 +8,28 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 def driveToWall(ev3, robot, sTRight, sTLeft, sUltra):
+    CENTER_DISTANCE = 200
+    DRIVE_UNIT = 200
+    ADJUSTMENT_PER_UNIT = 20
+    ADJUSTMENT_PRECISION = 3
+    LEVEL_OF_SIGNIFICANCE = 20
     adjusted = False
+    orientate = 0
     while not (sTRight.pressed() and sTLeft.pressed()):
-        prevDist = sUltra.distance() - 200
+        prevDist = sUltra.distance() - CENTER_DISTANCE
         distToCenter = prevDist
-        if abs(distToCenter) < 20: adjusted = True
+        if abs(distToCenter) < LEVEL_OF_SIGNIFICANCE: adjusted = True
         if not adjusted:
             robot.stop()
-            ev3.screen.print(distToCenter)
-            robot.turn(distToCenter / 2 + orientate)
-            robot.straight(200)
-            robot.turn( - (distToCenter / 2))
+            ev3.screen.print("distToCenter: " + str(distToCenter))
+            robot.turn(distToCenter / ADJUSTMENT_PRECISION + orientate)
+            robot.straight(DRIVE_UNIT)
+            robot.turn( - (distToCenter / ADJUSTMENT_PRECISION))
+            distToCenter = sUltra.distance() - CENTER_DISTANCE
+            orientate = distToCenter - prevDist + (ADJUSTMENT_PER_UNIT if distToCenter > CENTER_DISTANCE else -ADJUSTMENT_PER_UNIT)
+            ev3.screen.print("diff: " + str(orientate))
         else:
             robot.drive(DRIVE_SPEED, 0)
-        distToCenter = sUltra.distance() - 200
-        orientate = distToCenter - prevDist + (10 if distToCenter > 200 else -10)
         
 
 def wallTurn(robot):
