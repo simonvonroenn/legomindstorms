@@ -40,23 +40,17 @@ def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, DRIVE_SPEED):
             robot.turn( - (distToCenter / ADJUSTMENT_PRECISION))
         else:
             robot.drive(DRIVE_SPEED, 0)
-        
-
-def wallTurn(robot, NINETY_DEGREES):
-    robot.stop()
-    robot.straight(-100)
-    robot.turn(-2 * NINETY_DEGREES)
 
 def findBox(robot, sUltra, DRIVE_SPEED):
-    robot.drive(DRIVE_SPEED, 0)
+    robot.drive(-DRIVE_SPEED, 0)
     while True:
         if sUltra.distance() < 500:
             robot.stop()
-            robot.straight(100)
+            robot.straight(-50)
             break
 
 def moveBoxToWall(robot, DRIVE_SPEED, NINETY_DEGREES):
-    robot.turn(NINETY_DEGREES)
+    robot.turn(-NINETY_DEGREES)
     robot.reset()
     robot.drive(DRIVE_SPEED, 0)
     while robot.distance() < 5:
@@ -83,6 +77,6 @@ def move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     #     ev3.screen.print(sUltra.distance())
     orientate(robot, sUltra)
     driveToWall(ev3, robot, sTRight, sTLeft, sUltra, DRIVE_SPEED)
-    wallTurn(robot, NINETY_DEGREES)
+    mSensor.run_target(50, -90)
     findBox(robot, sUltra, DRIVE_SPEED)
     moveBoxToWall(robot, DRIVE_SPEED, NINETY_DEGREES)
