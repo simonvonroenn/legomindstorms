@@ -55,7 +55,7 @@ def findBox(robot, sUltra, DRIVE_SPEED):
             break
 
 def moveBoxToWall(robot, DRIVE_SPEED):
-    robot.turn(-90)
+    robot.turn(90)
     robot.reset()
     robot.drive(DRIVE_SPEED, 0)
     while robot.distance() < 5:
