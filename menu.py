@@ -9,9 +9,8 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 # import subroutine.bridge
 # import ./subroutine/follow
 # import ./subroutine/move
-from subroutine.follow import line_follower, line_follower_controller
-#from subroutine.bridge import bridge_main
-
+from subroutine.follow import line_follower_controller
+from subroutine.move import move_main
 
 # Other Imports
 import math
@@ -19,7 +18,7 @@ import time
 
 ev3 = EV3Brick()
 
-sections = ["FOLLOW", "SEARCH", "MOVE", "BRIDGE"]
+sections = ["FOLLOW", "MOVE", "BRIDGE", "SEARCH"]
 selec = 0
 
 def check_abort(ev3, mLeft, mRight, sColor):
@@ -49,15 +48,14 @@ def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
                 ev3.screen.clear()
                 ev3.screen.print("Following line")
                 line_follower_controller(ev3, mLeft, mRight, sColor)
-            elif sections[selec] is 'BRIDGE':
-                ev3.screen.clear()
-                ev3.screen.print("Bridge")
-                #bridge_main(ev3, mLeft, mRight, sColor)
             elif sections[selec] is 'MOVE':
+                ev3.screen.clear()
+                ev3.screen.print("Move Box")
+                move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
+            elif sections[selec] is 'BRIDGE':
                 pass
             elif sections[selec] is 'SEARCH':
                 pass
-
             else:
                pass
         
