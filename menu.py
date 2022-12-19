@@ -23,7 +23,6 @@ sections = ["FOLLOW", "SEARCH", "MOVE", "BRIDGE"]
 selec = 0
 
 def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
-    move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft) #testing
     global selec
 
     load_screen()
