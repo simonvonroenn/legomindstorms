@@ -22,5 +22,21 @@ def search_marker(ev3, mLeft, mRight, touchL, touchR, sColor):
         while not (touchL or touchR):
             if sColot.color() == Color.RED:
                 return
-        if turn_subroutine(robot, sColor):
+        if turn_subroutine(robot, sColor, i):
             return
+        i += 1
+
+#makes a 90 deg turn, moves forward a bit and makes another 90 deg turn; i decides if the turn is right or left
+def turn_subroutine(robot, sColor, i):
+    #positive = left, negative = right
+    angle = 90
+    if (i % 2) == 1:
+        angle = -90
+    robot.turn(angle)
+    if sColor.color() == Color.RED:
+        return True
+    robot.straight(50)
+    if sColor.color() == Color.RED:
+        return True
+    robot.turn(angle)
+    return False
