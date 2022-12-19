@@ -14,6 +14,7 @@ def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED):
     ADJUSTMENT_PRECISION = 4
     TOLERANCE = 10
 
+    robot.straight(100)
     mSensor.run_target(100, -90)
     while True:
         prevDist = sUltra.distance() - CENTER_DISTANCE

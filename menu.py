@@ -44,20 +44,26 @@ def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             load_screen()
 
         if Button.RIGHT in ev3.buttons.pressed():
+            resume = False
             if sections[selec] is 'FOLLOW':
                 ev3.screen.clear()
                 ev3.screen.print("Following line")
                 line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft)
-            elif sections[selec] is 'MOVE':
+                resume = True
+            if sections[selec] is 'MOVE' or resume:
                 ev3.screen.clear()
                 ev3.screen.print("Move Box")
                 move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
-            elif sections[selec] is 'BRIDGE':
-                pass
-            elif sections[selec] is 'SEARCH':
-                pass
-            else:
-               pass
+                resume = True
+            if sections[selec] is 'BRIDGE' or resume:
+                ev3.screen.clear()
+                ev3.screen.print("Bridge")
+                # bridge method
+                resume = True
+            if sections[selec] is 'SEARCH' or resume:
+                ev3.screen.clear()
+                ev3.screen.print("Search Dot")
+                # search method
         
         if Button.CENTER in ev3.buttons.pressed():
             break

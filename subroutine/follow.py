@@ -35,7 +35,7 @@ def box_subroutine(ev3, sColor, robot):
             robot.stop()
             break
 
-    robot.turn(-40)
+    robot.turn(-45)
 
 def gap_subroutine(ev3, color_sensor, mLeft, mRight):
     #drivebase settings
