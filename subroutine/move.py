@@ -9,25 +9,14 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 import time
 
-# def orientate(robot, sUltra):
-#     ANGLE_OFFSET = -40
-#     dist = sUltra.distance()
-#     while True:
-#         dist = sUltra.distance()
-#         robot.turn(5)
-#         if sUltra.distance() - dist > 0: break
-#     while True:
-#         dist = sUltra.distance()
-#         robot.turn(-5)
-#         if sUltra.distance() - dist > 0: break
-#     robot.turn(ANGLE_OFFSET)
-
 def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED):
     ev3.screen.print("driveToWall")
-    CENTER_DISTANCE = 60
+    CENTER_DISTANCE = 100
     DRIVE_UNIT = 80
-    ADJUSTMENT_PRECISION = 3
+    ADJUSTMENT_PRECISION = 4
     TOLERANCE = 10
+
+    mSensor.run_target(100, -90)
     while True:
         prevDist = sUltra.distance() - CENTER_DISTANCE
         distToCenter = prevDist
@@ -36,48 +25,59 @@ def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED):
         robot.straight(DRIVE_UNIT)
         robot.turn( - (distToCenter / ADJUSTMENT_PRECISION))
     
-    mSensor.run_target(100, 90)
-    while not (sTRight.pressed() or sTLeft.pressed()):
-        robot.drive(DRIVE_SPEED, 0)
+    mSensor.run_target(100, 0)
+    robot.drive(DRIVE_SPEED, 0)
+    while True:
+        if sTRight.pressed() or sTLeft.pressed():
+            break
     
 def wallTurn(ev3, robot):
     ev3.screen.print("wallTurn")
     robot.stop()
-    robot.straight(-100)
+    robot.straight(-50)
     robot.turn(-180)
 
 def findBox(ev3, robot, sUltra, mSensor, DRIVE_SPEED):
     ev3.screen.print("findBox")
-    mSensor.run_target(100, 0)
+    mSensor.run_target(100, -90)
     robot.drive(DRIVE_SPEED, 0)
     while True:
         if sUltra.distance() < 500:
             robot.stop()
-            robot.straight(100)
+            robot.straight(200)
             break
 
-def moveBoxToWall(ev3, robot, DRIVE_SPEED):
+def moveBoxToWall(ev3, robot, mSensor):
     ev3.screen.print("moveBoxToWall")
     robot.turn(90)
-    robot.reset()
-    robot.drive(DRIVE_SPEED, 0)
-    while robot.distance() < 5:
-        robot.reset()
-        time.sleep(1)
-    robot.stop()
+    mSensor.run_target(100, 0)
+    robot.straight(1000)
 
-def moveBoxToCorner(ev3, robot, DRIVE_SPEED):
+def moveBoxToCorner(ev3, robot):
     ev3.screen.print("moveBoxToCorner")
     robot.straight(-50)
     robot.turn(-90)
-    robot.straight(150)
+    robot.straight(200)
     robot.turn(90)
-    robot.straight(100)
+    robot.straight(200)
+    robot.turn(90)
+    robot.straight(1000)
+
+def goToNext(ev3, robot, sTRight, sTLeft, sColor, DRIVE_SPEED):
+    ev3.screen.print("goToNext")
+    robot.turn(180)
+    robot.drive(DRIVE_SPEED, 0)
+    while True:
+        if sTRight.pressed() or sTLeft.pressed():
+            break
+    robot.straight(-50)
+    robot.turn(-90)
+    robot.straight(300)
     robot.turn(90)
     robot.drive(DRIVE_SPEED, 0)
-    while robot.distance() < 5:
-        robot.reset()
-        time.sleep(1)
+    while True:
+        if sColor.color() == Color.BLUE:
+            break
 
 def move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=130)
