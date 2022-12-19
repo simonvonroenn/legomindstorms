@@ -54,12 +54,14 @@ def moveBoxToCorner(ev3, robot):
     robot.turn(90)
     robot.straight(200)
     robot.turn(90)
-    robot.straight(800)
+    robot.straight(600)
 
 def goToNext(ev3, robot, sTRight, sTLeft, sColor, DRIVE_SPEED):
     ev3.screen.print("goToNext")
     robot.straight(-50)
-    robot.turn(180)
+    robot.turn(-20)
+    robot.straight(-100)
+    robot.turn(180 + 20)
     robot.drive(DRIVE_SPEED, 0)
     while True:
         if sTRight.pressed() or sTLeft.pressed():
