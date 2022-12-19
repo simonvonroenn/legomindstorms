@@ -47,7 +47,7 @@ def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             if sections[selec] is 'FOLLOW':
                 ev3.screen.clear()
                 ev3.screen.print("Following line")
-                line_follower_controller(ev3, mLeft, mRight, sColor)
+                line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft)
             elif sections[selec] is 'MOVE':
                 ev3.screen.clear()
                 ev3.screen.print("Move Box")

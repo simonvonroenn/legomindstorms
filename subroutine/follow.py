@@ -117,13 +117,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
 
    
 
-def line_follower_controller(ev3, mLeft, mRight, sColor):  
-    touchL = TouchSensor(Port.S4)
-    touchR = TouchSensor(Port.S3)
-
-    speed = 700
-    time = 400       # milliseconds
-
+def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):  
     # initial measurment
     target_value = 30#35
     brown = 8
@@ -146,7 +140,7 @@ def line_follower_controller(ev3, mLeft, mRight, sColor):
 
         robot.drive(200, 0)
         while True:
-            if touchL.pressed() or touchR.pressed():
+            if sTLeft.pressed() or sTRight.pressed():
                 box_subroutine(ev3, sColor, robot)
                 return
             if error > 10:
