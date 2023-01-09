@@ -7,6 +7,8 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
+import math
+
 def turn_Left(robot):
     # make triangle turn
     pass
@@ -14,21 +16,18 @@ def turn_Left(robot):
 def search_main(ev3, mLeft, mRight, sColor):
 
     ROOM_LENGTH = 1000
-    ROBOT_SIZE = 100
+    ROBOT_WIDTH = 100
 
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
-    # Round 1
-    robot.straight(ROOM_LENGTH)
-    turn_Left(robot)
-    robot.straight(ROOM_LENGTH)
-    turn_Left(robot)
-    robot.straight(ROOM_LENGTH)
-    turn_Left(robot)
-    robot.straight(ROOM_LENGTH - ROBOT_SIZE)
-    turn_Left(robot)
-    # Round 2
-    # ....
-
+    for i in range(math.trunc(ROOM_LENGTH/ROBOT_WIDTH/2)):
+        robot.straight(ROOM_LENGTH - 2*i * ROBOT_WIDTH)
+        turn_Left(robot)
+        robot.straight(ROOM_LENGTH - (2*i+1) * ROBOT_WIDTH)
+        turn_Left(robot)
+        robot.straight(ROOM_LENGTH - (2*i+1) * ROBOT_WIDTH)
+        turn_Left(robot)
+        robot.straight(ROOM_LENGTH - 2*(i+1) * ROBOT_WIDTH)
+        turn_Left(robot)
 
 
 
