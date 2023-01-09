@@ -10,7 +10,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 import math
 import time
 
-def turn_Left(robot):
+def turn_left_triangle(robot):
     DRIVE_SPEED = 150
 
     robot.drive(-DRIVE_SPEED, 40)
@@ -26,20 +26,20 @@ def search_main(ev3, mLeft, mRight, sColor):
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
 
     while True:             # Testing
-        turn_Left(robot)
+        turn_left_triangle(robot)
         time.sleep(3)
 
     ROOM_LENGTH = 960   # in millimeters
     ROBOT_WIDTH = 125   # in millimeters
 
     robot.straight(ROOM_LENGTH)
-    turn_Left(robot)
+    turn_left_triangle(robot)
     robot.straight(ROOM_LENGTH - ROBOT_WIDTH)
-    turn_Left(robot)
+    turn_left_triangle(robot)
     robot.straight(ROOM_LENGTH - ROBOT_WIDTH)
-    turn_Left(robot)
+    turn_left_triangle(robot)
     robot.straight(ROOM_LENGTH - 2 * ROBOT_WIDTH)
-    turn_Left(robot)
+    turn_left_triangle(robot)
     for i in range(1, math.ceil(ROOM_LENGTH/ROBOT_WIDTH/2)):
         robot.straight(ROOM_LENGTH - 2*i * ROBOT_WIDTH)
         robot.turn(-90)
