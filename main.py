@@ -12,8 +12,8 @@ import menu
 
 # Create your objects here.
 ev3 = EV3Brick()
-mLeft = Motor(Port.A)
-mRight = Motor(Port.B)
+mLeft = Motor(Port.B)
+mRight = Motor(Port.A)
 mSensor = Motor(Port.C)
 sColor = ColorSensor(Port.S1)
 sUltra = UltrasonicSensor(Port.S2)
