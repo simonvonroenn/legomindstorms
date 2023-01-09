@@ -8,10 +8,19 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 import math
+import time
 
 def turn_Left(robot):
-    # make triangle turn
-    pass
+    DRIVE_SPEED = 150
+
+    robot.drive(-DRIVE_SPEED, 20)
+    time.sleep(2)
+    robot.drive(DRIVE_SPEED, 65)
+    time.sleep(2)
+    robot.drive(-DRIVE_SPEED, 0)
+    time.sleep(2)
+    
+    robot.stop()
 
 def search_main(ev3, mLeft, mRight, sColor):
 
