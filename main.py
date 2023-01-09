@@ -21,10 +21,11 @@ sTRight = TouchSensor(Port.S3)
 sTLeft = TouchSensor(Port.S4)
 
 # Write your program here.
-robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
-robot.settings(200, 200, 200, 200)
-robot.drive(-200,0)
-while True:
-    pass
+# robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
+# robot.settings(200, 200, 200, 200)
+# robot.drive(150,0)
 
-#menu.main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
+
+
+
+menu.main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)

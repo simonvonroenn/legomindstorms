@@ -68,29 +68,68 @@ def stay_up(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             robot.turn(-20)
             robot.drive(100,5)
 
-#To improve the 90 deg right turns, use robot.distance() between turn commands. if distance is too little, imedeadly make a harder turn 
-def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
-    ultra_threshold = 100 # placeholder
-    distance_threshold = 100 # placeholder
-    robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
-    robot.settings(200, 200, 200, 200)
+# #positions the robot for driving up the bridge
+# def position_upwards(robot):
+
+# used to stay on the bridge by driving with a slight angle and turning when the edge is seen
+#
+def stay_on(robot, sUltra, sColor, direction, blue):
+    ultra_threshold = 300 # placeholder
+    distance_threshold = 50 # placeholder
     #continously drive with a slight angle to the right
-    robot.drive(100,5)
+    robot.drive(100*direction,3*direction)
     BRIDGE_LENGTH = 4000 # placeholder value
     #Continue driving until blue line is found
-    while sColor.color() != Color.BLUE:
+    while True:
+        if blue:
+            if sColor.reflection() == Color.BLUE:
+                robot.stop()
+                break
         #adjust robot angle if it is near the right edge
         if sUltra.distance() > ultra_threshold:
-            #if the distance between the last turn is small, the position is at the corner => immediately turn
+        #if the distance between the last turn is small, the position is at the corner => immediately turn
+            robot.stop()
             if robot.distance() < distance_threshold:
-                robot.turn(-70)
-            else:
-                robot.turn(-20)
+                #robot.turn(-70*direction)
+                break
+            robot.turn(-20*direction)
             robot.reset()
-            robot.drive(100,5)
-    
-    #stop the robot at the end of bridge
+            robot.drive(100*direction,3*direction)
     robot.stop()
+
+
+
+#To improve the 90 deg right turns, use robot.distance() between turn commands. if distance is too little, imedeadly make a harder turn 
+def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
+    #sUltra.run_angle(200, 45, then=Stop.HOLD, wait=True)
+    #125 old axle track
+    robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=135)
+    robot.settings(200, 200, 200, 200)
+
+
+    #turn robot backwards to drive up the bridge
+    robot.straight(-20)
+    #robot.turn(180)
+    ev3.screen.clear()
+    ev3.screen.draw_text(20, 20, sUltra.distance())
+    #stay on track while driving reverse upwards
+    stay_on(robot, sUltra, sColor, -1)
+    robot.straight(-20)
+    #fake right turn, afterward straight
+    robot.turn(-110)
+    print("after first")
+
+    #reverse robot again to drive forward on the bridge
+    #robot.turn(180)
+    #stay on track until next 90 deg turn
+    stay_on(robot, sUltra, sColor, 1)
+    robot.straight(-70)
+    robot.turn(110)
+    #stay on track until blue line
+    stay_on(robot, sUltra, sColor, 1)
+    robot.stop()
+    #stop the robot at the end of bridge
+    
 
             
 
