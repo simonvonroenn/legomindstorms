@@ -9,7 +9,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 # import subroutine.bridge
 # import ./subroutine/follow
 # import ./subroutine/move
-from subroutine.follow import line_follower
+from subroutine.search import search_main
 
 
 # Other Imports
@@ -23,6 +23,8 @@ selec = 0
 
 def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     global selec
+
+    search_main(ev3, mLeft, mRight, sColor) # Testing
 
     load_screen()
     while True:
