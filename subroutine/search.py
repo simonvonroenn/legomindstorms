@@ -41,8 +41,6 @@ def search_main(ev3, mLeft, mRight, sColor):
     SPOT_WIDTH = 70     # in millimeters
     TURN_OFFSET = 150
 
-    # robot is driving too long distances after second turn
-
     # 1
     robot.drive(DRIVE_SPEED, 0)
     time.sleep(1) # Prevents scanning the blue line. '-150' in searchSpot() to counterbalance this sleep
@@ -90,3 +88,5 @@ def search_main(ev3, mLeft, mRight, sColor):
             return
         robot.stop()
         robot.turn(-90)
+
+# Maybe create alternative searching path, in case the robot didn't find the red spot?
