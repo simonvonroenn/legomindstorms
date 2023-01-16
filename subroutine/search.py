@@ -31,7 +31,7 @@ def search_main(ev3, mLeft, mRight, sColor):
 
     ROOM_LENGTH = 900   # in millimeters
     SPOT_WIDTH = 70     # in millimeters
-    TURN_OFFSET = 100
+    TURN_OFFSET = 150
 
     # robot is driving too long distances after second turn
 
@@ -47,12 +47,24 @@ def search_main(ev3, mLeft, mRight, sColor):
     robot.drive(DRIVE_SPEED, 0)
     time.sleep((ROOM_LENGTH - 2 * SPOT_WIDTH - TURN_OFFSET)/DRIVE_SPEED)
     turn_left_triangle(robot)
-    for i in range(1, math.trunc(ROOM_LENGTH/SPOT_WIDTH/2)):
-        robot.straight(ROOM_LENGTH - 2*i * SPOT_WIDTH)
+    for i in range(2, math.trunc(ROOM_LENGTH/SPOT_WIDTH/2)):
+        # 1
+        robot.drive(DRIVE_SPEED, 0)
+        time.sleep((ROOM_LENGTH - 2*i * SPOT_WIDTH)/DRIVE_SPEED)
+        robot.stop()
         robot.turn(-90)
-        robot.straight(ROOM_LENGTH - (2*i+1) * SPOT_WIDTH)
+        # 2
+        robot.drive(DRIVE_SPEED, 0)
+        time.sleep((ROOM_LENGTH - (2*i+1) * SPOT_WIDTH)/DRIVE_SPEED)
+        robot.stop()
         robot.turn(-90)
-        robot.straight(ROOM_LENGTH - (2*i+1) * SPOT_WIDTH)
+        # 3
+        robot.drive(DRIVE_SPEED, 0)
+        time.sleep((ROOM_LENGTH - (2*i+1) * SPOT_WIDTH)/DRIVE_SPEED)
+        robot.stop()
         robot.turn(-90)
-        robot.straight(ROOM_LENGTH - 2*(i+1) * SPOT_WIDTH)
+        # 4
+        robot.drive(DRIVE_SPEED, 0)
+        time.sleep((ROOM_LENGTH - 2*(i+1) * SPOT_WIDTH)/DRIVE_SPEED)
+        robot.stop()
         robot.turn(-90)
