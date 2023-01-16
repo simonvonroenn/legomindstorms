@@ -74,8 +74,8 @@ def stay_up(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
 # used to stay on the bridge by driving with a slight angle and turning when the edge is seen
 #
 def stay_on(robot, sUltra, sColor, direction, blue):
-    ultra_threshold = 300 # placeholder
-    distance_threshold = 50 # placeholder
+    ultra_threshold = 130 # placeholder
+    distance_threshold = 20 # placeholder
     #continously drive with a slight angle to the right
     robot.drive(100*direction,3*direction)
     BRIDGE_LENGTH = 4000 # placeholder value
@@ -87,15 +87,41 @@ def stay_on(robot, sUltra, sColor, direction, blue):
                 break
         #adjust robot angle if it is near the right edge
         if sUltra.distance() > ultra_threshold:
+            print(sUltra.distance())
         #if the distance between the last turn is small, the position is at the corner => immediately turn
             robot.stop()
-            if robot.distance() < distance_threshold:
+            if robot.distance() * direction < distance_threshold:
                 #robot.turn(-70*direction)
                 break
             robot.turn(-20*direction)
             robot.reset()
             robot.drive(100*direction,3*direction)
     robot.stop()
+
+def stay_on_V2(robot, sUltra, sColor, direction, section_length, blue):
+    ultra_threshold = 150 # placeholder
+    speed = 150
+    #continously drive with a slight angle to the right
+    robot.reset()
+    robot.drive(speed*direction,3*direction)
+    #Continue driving until blue line is found
+
+    #previous distance value after turn
+    prev = 0
+    thresh_dist = 200 #cant turn again if distance to previous is not 200
+    while robot.distance() * direction < section_length - 20:
+        if blue:
+            if sColor.reflection() == Color.BLUE:
+                robot.stop()
+                break
+        #adjust robot angle if it is near the right edge
+        if sUltra.distance() > ultra_threshold and  (robot.distance() - prev) * direction >= thresh_dist:
+            robot.stop()
+            robot.turn(-22*direction)
+            prev = robot.distance()          
+            robot.drive(speed*direction,3*direction)
+    robot.stop()
+
 
 
 
@@ -106,27 +132,45 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=135)
     robot.settings(200, 200, 200, 200)
 
+    #100cm ramp and 145cm bridge section
+    ramp_length = 1000 - 70
+    bridge_length = 1450 - 70
+
 
     #turn robot backwards to drive up the bridge
     robot.straight(-20)
-    #robot.turn(180)
+    robot.turn(180)
+    #drive up a certain length to guarantee good distance
+    robot.straight(-100)
     ev3.screen.clear()
     ev3.screen.draw_text(20, 20, sUltra.distance())
     #stay on track while driving reverse upwards
-    stay_on(robot, sUltra, sColor, -1)
-    robot.straight(-20)
+    #makes problems => try hardcoded variant
+    #stay_on(robot, sUltra, sColor, -1, False)
+    stay_on_V2(robot, sUltra, sColor, -1, ramp_length, False)
     #fake right turn, afterward straight
-    robot.turn(-110)
+    #return
+    robot.turn(-100)
     print("after first")
 
     #reverse robot again to drive forward on the bridge
     #robot.turn(180)
     #stay on track until next 90 deg turn
-    stay_on(robot, sUltra, sColor, 1)
-    robot.straight(-70)
-    robot.turn(110)
+    #stay_on(robot, sUltra, sColor, 1,False)
+    stay_on_V2(robot, sUltra, sColor, 1, bridge_length, False)
+    #robot.straight(-70)
+    robot.turn(90)
     #stay on track until blue line
-    stay_on(robot, sUltra, sColor, 1)
+    #stay_on(robot, sUltra, sColor, 1, True)
+    stay_on_V2(robot, sUltra, sColor, 1, ramp_length - 40, True)
+
+    #additional code neccessary to find blue line
+    #robot is very near to blue line, probably blocked to the left
+    # while sColor.reflection() != Color.BLUE:
+    #     robot.straight(-10)
+    #     robot.turn(-10)
+    #     robot.straight(15)
+
     robot.stop()
     #stop the robot at the end of bridge
     
