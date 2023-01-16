@@ -8,9 +8,14 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 def straight(ev3, robot, distance):
+    if distance > 0:
+        DRIVE_SPEED = 150
+    else:
+        DRIVE_SPEED = -150
+
     robot.reset()
-    robot.drive()
-    while robot.distance() < distance:
+    robot.drive(DRIVE_SPEED, 0)
+    while abs(robot.distance()) < abs(distance):
         if Button.LEFT in ev3.buttons.pressed():
             robot.stop()
             return True
