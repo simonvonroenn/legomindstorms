@@ -6,3 +6,118 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
+
+import math
+import time
+
+def searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, time, TURN_OFFSET):
+    """ Search the red spot.
+
+    While the robot drives forward, this method searches for the red spot.
+    If the robot finds the spot, stop the robot and return to menu.
+
+    Parameters:
+    robot       --  the drive base
+    sColor      --  the color sensor
+    ROOM_LENGTH --  the length of the room in millimeters
+    SPOT_WIDTH  --  the width of the red spot
+    time        --  a multiplier that determines how far the robot should drive
+                    it is responsible for making the spiral path
+    TURN_OFFSET --  an offset that applies only in the first round of the spiral
+    """
+    
+    robot.reset()
+    while robot.distance() < (ROOM_LENGTH - time * SPOT_WIDTH - TURN_OFFSET):
+        if sColor.color() == Color.RED:
+            robot.stop()
+            return True
+    return False
+
+def turn_left_triangle(robot):
+    """ Make a left turn in a triangle shape
+
+    Makes the robot do a left turn, but in a triangle shape.
+    This is necessary in the first round of the spiral shape to assure the robot won't touch the wall.
+
+    Parameters:
+    robot   --  the drive base
+    """
+
+    DRIVE_SPEED = 100
+
+    robot.stop()
+    robot.drive(-DRIVE_SPEED, 40)
+    time.sleep(1)
+    robot.drive(DRIVE_SPEED, -140)  # mathematically it should be -130°
+    time.sleep(1)
+    robot.stop()
+
+def search_main(ev3, mLeft, mRight, sColor):
+    """Main function of the search subroutine.
+
+    This is the main function of the search subroutine.
+    It creates the spiral shape, the robot should drive, to find the red spot.
+
+    Parameters:
+    ev3     --  the ev3 brick
+    mLeft   --  the left drive motor
+    mRight  --  the right drive motor
+    sColor  --  the color sensor
+    """
+
+    robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=135)
+    DRIVE_SPEED = 150
+
+    ROOM_LENGTH = 900   # in millimeters
+    SPOT_WIDTH = 70     # in millimeters
+    TURN_OFFSET = 150
+
+    # 1
+    robot.drive(DRIVE_SPEED, 0)
+    time.sleep(1) # Prevents scanning the blue line. '-150' in searchSpot() to counterbalance this sleep
+    if searchSpot(robot, sColor, ROOM_LENGTH + 50 - 150, 0, 1, 0):
+        return
+    turn_left_triangle(robot)
+    # 2
+    robot.drive(DRIVE_SPEED, 0)
+    if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
+        return
+    turn_left_triangle(robot)
+    # 3
+    robot.drive(DRIVE_SPEED, 0)
+    if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
+        return
+    turn_left_triangle(robot)
+    # 4
+    robot.drive(DRIVE_SPEED, 0)
+    if searchSpot(robot, sColor, ROOM_LENGTH, 2 * SPOT_WIDTH, 1, TURN_OFFSET):
+        return
+    turn_left_triangle(robot)
+
+    for i in range(2, math.trunc(ROOM_LENGTH/SPOT_WIDTH/2)):
+        # 1
+        robot.drive(DRIVE_SPEED, 0)
+        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i, 0):
+            return
+        robot.stop()
+        robot.turn(-90)
+        # 2
+        robot.drive(DRIVE_SPEED, 0)
+        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
+            return
+        robot.stop()
+        robot.turn(-90)
+        # 3
+        robot.drive(DRIVE_SPEED, 0)
+        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
+            return
+        robot.stop()
+        robot.turn(-90)
+        # 4
+        robot.drive(DRIVE_SPEED, 0)
+        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*(i+1), 0):
+            return
+        robot.stop()
+        robot.turn(-90)
+
+    # Maybe create alternative searching path, in case the robot didn't find the red spot?
