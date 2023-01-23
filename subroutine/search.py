@@ -58,9 +58,9 @@ def turn_left_triangle(robot):
     DRIVE_SPEED = 75
 
     robot.stop()
-    robot.drive(-DRIVE_SPEED, -26.666) # 40° in total
+    robot.drive(-DRIVE_SPEED, -30) # mathematically it should be -26.666
     time.sleep(1.5)
-    robot.drive(DRIVE_SPEED, 86.666) # 130° in total
+    robot.drive(DRIVE_SPEED, 97.5) # mathematically it should be 86.666
     time.sleep(1.5)
     robot.stop()
 
@@ -83,6 +83,8 @@ def search_main(ev3, mLeft, mRight, sColor):
     ROOM_LENGTH = 900   # in millimeters
     SPOT_WIDTH = 70     # in millimeters
     TURN_OFFSET = 150
+    
+    turn_left_triangle(robot)
 
     # 1
     robot.drive(DRIVE_SPEED, 0)
