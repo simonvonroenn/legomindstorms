@@ -10,6 +10,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 from subroutine.follow import line_follower_controller
 from subroutine.move import move_main
 from subroutine.search import search_main
+from subroutine.bridge import bridge_main
 
 # Other Imports
 import math
@@ -57,6 +58,7 @@ def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             if sections[selec] is 'BRIDGE' or resume:
                 ev3.screen.clear()
                 ev3.screen.print("Bridge")
+                bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
                 # bridge method
                 resume = True
             if sections[selec] is 'SEARCH' or resume:
