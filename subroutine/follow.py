@@ -26,24 +26,26 @@ def box_subroutine(ev3, sColor, robot):
     robot.turn(-RIGHT_ANGLE)
     robot.straight(200)
     robot.turn(RIGHT_ANGLE)
-    robot.straight(350)
-    robot.turn(RIGHT_ANGLE - 45)
-    
+    robot.straight(320)
+    robot.turn(RIGHT_ANGLE)# - 45)
+    robot.straight(200)
+    robot.turn(-Right_Angle)
+    robot.reset()
     robot.drive(100,0)
     while True:
-        if sColor.color() ==  Color.BLUE:
+        if sColor.color() ==  Color.BLUE and robot.distance() >= 100:
             robot.stop()
             break
 
-    robot.turn(-45)
+    #robot.turn(-45)
 
 def gap_subroutine(ev3, color_sensor, mLeft, mRight):
     #drivebase settings
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
     robot.settings(200, 200, 200, 200)
    
-    threshold_l = 25
-    threshold_r = 19
+    threshold_l = 23
+    threshold_r = 15
 
     #normal turns
     angles = [20, 70]
@@ -58,7 +60,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
             if color_sensor.reflection() >= threshold_l:
                 robot.stop()
                 #line was found, return to line following subroutine
-                return i
+                return i * 2
             elif robot.angle() >= i:
                 ev3.screen.print(robot.angle())
                 robot.stop()
@@ -71,7 +73,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
             if color_sensor.reflection() >= threshold_r:
                 robot.stop()
                 #line was found, return to line following subroutine
-                return -i
+                return -i * 2
             elif robot.angle() <= -i:
                 #ev3.screen.print(robot.angle())
                 robot.stop()
@@ -90,7 +92,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
                 line_found = True
                 robot.stop()
                 #line was found, return to line following subroutine
-                return -90
+                return 0
             elif robot.angle() <= -20:
                 #ev3.screen.print(robot.angle())
                 robot.reset()
@@ -100,7 +102,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
     while robot.angle() <= 120:
         if color_sensor.reflection() >= threshold_l:
             robot.stop()
-            return -90
+            return 0
     robot.stop()
 
 
@@ -111,7 +113,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
         if color_sensor.reflection() >= threshold_l:
             robot.stop()
             break
-    return -90
+    return 0
          
         
 
@@ -145,11 +147,12 @@ def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):
             if sTLeft.pressed() or sTRight.pressed():
                 box_subroutine(ev3, sColor, robot)
                 return
-            if error > 15:
+            if error > 17:
                 robot.stop()
                 break
             error = target_value - sColor.reflection()
-        turn_rate = gap_subroutine(ev3, sColor, mLeft, mRight)
+        new_turn = gap_subroutine(ev3, sColor, mLeft, mRight)
+        turn_rate = turn_rate + new_turn if (new_turn > 0 and (turn_rate * new_turn >= 0))  else new_turn
 
 
 def found_blue(sColor):
