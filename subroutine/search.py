@@ -37,9 +37,9 @@ def searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, time, TURN_OFFSET):
     robot.reset()
     while robot.distance() < (ROOM_LENGTH - time * SPOT_WIDTH - TURN_OFFSET):
         if sColor.color() == Color.RED or sColor.color() == Color.WHITE:
-            ev3.speaker.beep() if not (foundRed or foundWhite)
-            foundRed = True if sColor.color() == Color.RED
-            foundWhite = True if sColor.color() == Color.WHITE
+            if not (foundRed or foundWhite): ev3.speaker.beep() 
+            if sColor.color() == Color.RED: foundRed = True 
+            if sColor.color() == Color.WHITE: foundWhite = True 
             if foundRed and foundWhite:
                 robot.stop()
                 return True
@@ -87,40 +87,40 @@ def search_main(ev3, mLeft, mRight, sColor):
     # 1
     robot.drive(DRIVE_SPEED, 0)
     time.sleep(1) # Prevents scanning the blue line. '-150' in searchSpots() to counterbalance this sleep
-    return if searchSpots(robot, sColor, ROOM_LENGTH + 50 - 150, 0, 1, 0):
+    if searchSpots(robot, sColor, ROOM_LENGTH + 50 - 150, 0, 1, 0): return
     turn_left_triangle(robot)
     # 2
     robot.drive(DRIVE_SPEED, 0)
-    return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
+    if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET): return
     turn_left_triangle(robot)
     # 3
     robot.drive(DRIVE_SPEED, 0)
-    return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
+    if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET): return
     turn_left_triangle(robot)
     # 4
     robot.drive(DRIVE_SPEED, 0)
-    return if searchSpots(robot, sColor, ROOM_LENGTH, 2 * SPOT_WIDTH, 1, TURN_OFFSET):
+    if searchSpots(robot, sColor, ROOM_LENGTH, 2 * SPOT_WIDTH, 1, TURN_OFFSET): return
     turn_left_triangle(robot)
 
     for i in range(2, math.trunc(ROOM_LENGTH/SPOT_WIDTH/2)):
         # 1
         robot.drive(DRIVE_SPEED, 0)
-        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i, 0):
+        if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i, 0): return
         robot.stop()
         robot.turn(-90)
         # 2
         robot.drive(DRIVE_SPEED, 0)
-        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
+        if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0): return
         robot.stop()
         robot.turn(-90)
         # 3
         robot.drive(DRIVE_SPEED, 0)
-        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
+        if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0): return
         robot.stop()
         robot.turn(-90)
         # 4
         robot.drive(DRIVE_SPEED, 0)
-        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*(i+1), 0):
+        if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*(i+1), 0): return
         robot.stop()
         robot.turn(-90)
 
