@@ -22,10 +22,10 @@ def searchSpots(ev3, robot, sColor, ROOM_LENGTH, SPOT_WIDTH, time, TURN_OFFSET):
     If the robot find the second spot, it stops and the program returns to menu.
 
     Parameters:
-    robot       --  the drive base
-    sColor      --  the color sensor
-    ROOM_LENGTH --  the length of the room in millimeters
-    SPOT_WIDTH  --  the width of the red spot
+    robot       --  drive base
+    sColor      --  color sensor
+    ROOM_LENGTH --  length of the room in millimeters
+    SPOT_WIDTH  --  width of the red spot
     time        --  a multiplier that determines how far the robot should drive
                     it is responsible for making the spiral path
     TURN_OFFSET --  an offset that applies only in the first round of the spiral
@@ -52,15 +52,15 @@ def turn_left_triangle(robot):
     This is necessary in the first round of the spiral shape to assure the robot won't touch the wall.
 
     Parameters:
-    robot   --  the drive base
+    robot   --  drive base
     """
 
     DRIVE_SPEED = 75
 
     robot.stop()
-    robot.drive(-DRIVE_SPEED, 30) # 40° per second
+    robot.drive(-DRIVE_SPEED, 26.666) # 40° in total
     time.sleep(1.5)
-    robot.drive(DRIVE_SPEED, -97.5) # 130° per second
+    robot.drive(DRIVE_SPEED, -86.666) # 130° in total
     time.sleep(1.5)
     robot.stop()
 
@@ -71,10 +71,10 @@ def search_main(ev3, mLeft, mRight, sColor):
     It creates the spiral shape, the robot should drive, to find the red spot.
 
     Parameters:
-    ev3     --  the ev3 brick
-    mLeft   --  the left drive motor
-    mRight  --  the right drive motor
-    sColor  --  the color sensor
+    ev3     --  ev3 brick
+    mLeft   --  left drive motor
+    mRight  --  right drive motor
+    sColor  --  color sensor
     """
 
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=135)
