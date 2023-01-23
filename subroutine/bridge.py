@@ -42,7 +42,7 @@ def stay_on_section(robot, sUltra, sColor, direction, section_length, blue=False
             robot.stop()
             robot.turn(-15*direction)
             prev = robot.distance()          
-            robot.drive(speed*direction,2*direction)
+            robot.drive(speed*direction,3*direction)
     robot.stop()
 
 
@@ -95,20 +95,21 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     robot.turn(90)
     #stay on track until blue line
     #stay_on(robot, sUltra, sColor, 1, True)
-    stay_on_section(robot, sUltra, sColor, 1, ramp_length - 150, True)
-    robot.turn(-30)
+    #stay_on_section(robot, sUltra, sColor, 1, ramp_length - 150, True)
+    robot.straight(ramp_length)
+    #robot.turn(-30)
     
-    robot.stop()
-    robot.reset()
+    # robot.stop()
+    # robot.reset()
 
-    robot.drive(100, 0)
-    while robot.distance() < 150:
-        #somehow blue line is not found
-        if sColor.reflection() == Color.BLUE:
-            robot.stop()
-            break
+    # robot.drive(100, 0)
+    # while robot.distance() < 150:
+    #     #somehow blue line is not found
+    #     if sColor.reflection() == Color.BLUE:
+    #         robot.stop()
+    #         break
 
-    robot.turn(10)
+    # robot.turn(10)
 
     robot.stop()
     #stop the robot at the end of bridge
