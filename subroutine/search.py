@@ -58,9 +58,9 @@ def turn_left_triangle(robot):
     DRIVE_SPEED = 75
 
     robot.stop()
-    robot.drive(-DRIVE_SPEED, 26.666) # 40° in total
+    robot.drive(-DRIVE_SPEED, -26.666) # 40° in total
     time.sleep(1.5)
-    robot.drive(DRIVE_SPEED, -86.666) # 130° in total
+    robot.drive(DRIVE_SPEED, 86.666) # 130° in total
     time.sleep(1.5)
     robot.stop()
 
@@ -107,21 +107,21 @@ def search_main(ev3, mLeft, mRight, sColor):
         robot.drive(DRIVE_SPEED, 0)
         if searchSpots(ev3, robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i, 0): return
         robot.stop()
-        robot.turn(-90)
+        robot.turn(90)
         # 2
         robot.drive(DRIVE_SPEED, 0)
         if searchSpots(ev3, robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0): return
         robot.stop()
-        robot.turn(-90)
+        robot.turn(90)
         # 3
         robot.drive(DRIVE_SPEED, 0)
         if searchSpots(ev3, robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0): return
         robot.stop()
-        robot.turn(-90)
+        robot.turn(90)
         # 4
         robot.drive(DRIVE_SPEED, 0)
         if searchSpots(ev3, robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*(i+1), 0): return
         robot.stop()
-        robot.turn(-90)
+        robot.turn(90)
 
     # Maybe create alternative searching path, in case the robot didn't find the red spot?
