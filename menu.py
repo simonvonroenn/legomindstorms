@@ -61,7 +61,7 @@ def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
                 resume = True
             if sections[selec] is 'SEARCH' or resume:
                 ev3.screen.clear()
-                ev3.screen.print("Search Red and White Spot")
+                ev3.screen.print("Search Spots")
                 search_main(ev3, mLeft, mRight, sColor)
         
         if Button.CENTER in ev3.buttons.pressed():
