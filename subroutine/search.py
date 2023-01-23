@@ -10,11 +10,16 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 import math
 import time
 
-def searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, time, TURN_OFFSET):
-    """ Search the red spot.
 
-    While the robot drives forward, this method searches for the red spot.
-    If the robot finds the spot, stop the robot and return to menu.
+foundRed = False
+foundWhite = False
+
+def searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, time, TURN_OFFSET):
+    """ Search the red and the white spot.
+
+    While the robot drives forward, this method searches for the red and the white spot.
+    If the robot finds the first spot, it beeps.
+    If the robot find the second spot, it stops and the program returns to menu.
 
     Parameters:
     robot       --  the drive base
@@ -26,11 +31,18 @@ def searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, time, TURN_OFFSET):
     TURN_OFFSET --  an offset that applies only in the first round of the spiral
     """
     
+    global foundRed
+    global foundWhite
+
     robot.reset()
     while robot.distance() < (ROOM_LENGTH - time * SPOT_WIDTH - TURN_OFFSET):
-        if sColor.color() == Color.RED:
-            robot.stop()
-            return True
+        if sColor.color() == Color.RED or sColor.color() == Color.WHITE:
+            ev3.speaker.beep() if not (foundRed or foundWhite)
+            foundRed = True if sColor.color() == Color.RED
+            foundWhite = True if sColor.color() == Color.WHITE
+            if foundRed and foundWhite:
+                robot.stop()
+                return True
     return False
 
 def turn_left_triangle(robot):
@@ -74,49 +86,41 @@ def search_main(ev3, mLeft, mRight, sColor):
 
     # 1
     robot.drive(DRIVE_SPEED, 0)
-    time.sleep(1) # Prevents scanning the blue line. '-150' in searchSpot() to counterbalance this sleep
-    if searchSpot(robot, sColor, ROOM_LENGTH + 50 - 150, 0, 1, 0):
-        return
+    time.sleep(1) # Prevents scanning the blue line. '-150' in searchSpots() to counterbalance this sleep
+    return if searchSpots(robot, sColor, ROOM_LENGTH + 50 - 150, 0, 1, 0):
     turn_left_triangle(robot)
     # 2
     robot.drive(DRIVE_SPEED, 0)
-    if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
-        return
+    return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
     turn_left_triangle(robot)
     # 3
     robot.drive(DRIVE_SPEED, 0)
-    if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
-        return
+    return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 1, TURN_OFFSET):
     turn_left_triangle(robot)
     # 4
     robot.drive(DRIVE_SPEED, 0)
-    if searchSpot(robot, sColor, ROOM_LENGTH, 2 * SPOT_WIDTH, 1, TURN_OFFSET):
-        return
+    return if searchSpots(robot, sColor, ROOM_LENGTH, 2 * SPOT_WIDTH, 1, TURN_OFFSET):
     turn_left_triangle(robot)
 
     for i in range(2, math.trunc(ROOM_LENGTH/SPOT_WIDTH/2)):
         # 1
         robot.drive(DRIVE_SPEED, 0)
-        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i, 0):
-            return
+        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i, 0):
         robot.stop()
         robot.turn(-90)
         # 2
         robot.drive(DRIVE_SPEED, 0)
-        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
-            return
+        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
         robot.stop()
         robot.turn(-90)
         # 3
         robot.drive(DRIVE_SPEED, 0)
-        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
-            return
+        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*i+1, 0):
         robot.stop()
         robot.turn(-90)
         # 4
         robot.drive(DRIVE_SPEED, 0)
-        if searchSpot(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*(i+1), 0):
-            return
+        return if searchSpots(robot, sColor, ROOM_LENGTH, SPOT_WIDTH, 2*(i+1), 0):
         robot.stop()
         robot.turn(-90)
 
