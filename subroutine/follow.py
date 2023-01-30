@@ -21,6 +21,12 @@ def stop_func(ev3):
 
 #box subroutine
 def box_subroutine(ev3, sColor, robot):
+    """Drives around the box and makes sure to continue following the line 
+    Parameters:
+    ev3         --  ev3
+    robot       --  the drive base
+    sColor      --  the color sensor
+    """
     print("search box")
     robot.straight(-40)
     robot.turn(-RIGHT_ANGLE)
@@ -40,6 +46,15 @@ def box_subroutine(ev3, sColor, robot):
     #robot.turn(-45)
 
 def gap_subroutine(ev3, color_sensor, mLeft, mRight):
+    """Handles refinding the line and gaps in the track.
+    Tries to find the line again using increments of left and right turns.
+    If line was not found, drive forward and try again
+    Parameters:
+    ev3         --  ev3
+    mLeft       --  left motor
+    mRight      --  right motor 
+    color_sensor      --  the color sensor
+    """
     #drivebase settings
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
     robot.settings(200, 200, 200, 200)
@@ -120,7 +135,18 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
 
    
 
-def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):  
+def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):
+    """Handles following the line.
+    Main part of line following. Tries to stay on the line by detecting curves and driving accordingly.
+    Detects if line is lost.
+    Parameters:
+    ev3         --  ev3
+    mLeft       --  left motor
+    mRight      --  right motor 
+    sColor      --  the color sensor
+    sTRight     --  right touch sensor
+    sTLeft      --  left touch sensor
+    """
     # initial measurment
     target_value = 30#35
     brown = 8
@@ -169,6 +195,13 @@ def program_aborted():
         return False
 
 def line_follower(ev3, mLeft, mRight, sColor):
+    """Deprecated version of line-following
+    Parameters:
+    ev3         --  ev3
+    mLeft       --  left motor
+    mRight      --  right motor 
+    color_sensor      --  the color sensor
+    """
     ev3.speaker.beep()
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
     touchL = TouchSensor(Port.S3)
