@@ -22,13 +22,13 @@ def stay_on_section(robot, sUltra, sColor, direction, section_length, blue=False
     """
     robot.stop()
     #multiplier to turn harder when on last section
-    blue_mult = 30 if blue else 0
+    #blue_mult = 30 if blue else 0
     robot.settings(speed, speed, speed, speed)
-    ultra_threshold = 150 # placeholder
+    ultra_threshold = 200 # placeholder
     speed = 150
     #continously drive with a slight angle to the right
     robot.reset()
-    robot.drive(speed*direction,(3 + (blue/5))*direction)
+    robot.drive(speed*direction,(3)*direction)
     #Continue driving until blue line is found
 
     #previous distance value after turn
@@ -42,7 +42,10 @@ def stay_on_section(robot, sUltra, sColor, direction, section_length, blue=False
         #adjust robot angle if it is near the right edge
         if sUltra.distance() > ultra_threshold and  (robot.distance() - prev) * direction >= thresh_dist:
             robot.stop()
-            robot.turn((-12 - blue)*direction)
+            robot.turn(-12*direction)
+            if blue:
+                robot.stop()
+                return
             prev = robot.distance()          
             robot.drive(speed*direction,3 *direction)
     robot.stop()
@@ -140,7 +143,7 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     robot.turn(90)
     #stay on track until blue line
     #stay_on(robot, sUltra, sColor, 1, True)
-    stay_on_section(robot, sUltra, sColor, 1, ramp_length - 200, True, speed=50)
+    stay_on_section(robot, sUltra, sColor, 1, ramp_length - 300, True, speed=50)
     #robot.straight(ramp_length - 150)
     #robot.turn(-350)
     

@@ -32,14 +32,16 @@ def box_subroutine(ev3, sColor, robot):
     robot.turn(-RIGHT_ANGLE)
     robot.straight(200)
     robot.turn(RIGHT_ANGLE)
-    robot.straight(320)
-    robot.turn(RIGHT_ANGLE)# - 45)
+    robot.straight(350)
+    robot.turn(60)# - 45)
     robot.straight(200)
-    robot.turn(-Right_Angle)
+    robot.turn(-60)
+    robot.straight(-50)
+    #robot.turn(-RIGHT_ANGLE)
     robot.reset()
     robot.drive(100,0)
     while True:
-        if sColor.color() ==  Color.BLUE and robot.distance() >= 100:
+        if sColor.color() == Color.BLUE or robot.distance() > 20:
             robot.stop()
             break
 
