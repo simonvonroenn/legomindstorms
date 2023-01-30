@@ -43,9 +43,6 @@ def stay_on_section(robot, sUltra, sColor, direction, section_length, blue=False
         if sUltra.distance() > ultra_threshold and  (robot.distance() - prev) * direction >= thresh_dist:
             robot.stop()
             robot.turn((-12 - blue)*direction)
-            if blue:
-                robot.stop()
-                return
             prev = robot.distance()          
             robot.drive(speed*direction,3 *direction)
     robot.stop()
@@ -70,7 +67,7 @@ def stay_on_bridge(robot, sUltra, sColor, direction, section_length, speed=150):
     speed = 150
     #continously drive with a slight angle to the right
     robot.reset()
-    robot.drive(speed*direction,(3 + (blue/5))*direction)
+    robot.drive(speed*direction,(3 )*direction)
     #Continue driving until blue line is found
 
     #previous distance value after turn
@@ -140,10 +137,10 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     #stay_on(robot, sUltra, sColor, 1,False)
     stay_on_section(robot, sUltra, sColor, 1, bridge_length)
     #robot.straight(-70)
-    robot.turn(-90)
+    robot.turn(90)
     #stay on track until blue line
     #stay_on(robot, sUltra, sColor, 1, True)
-    stay_on_section(robot, sUltra, sColor, -1, ramp_length - 150, True)
+    stay_on_section(robot, sUltra, sColor, 1, ramp_length - 200, True, speed=50)
     #robot.straight(ramp_length - 150)
     #robot.turn(-350)
     
@@ -151,25 +148,39 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     robot.reset()
     mSensor.run_angle(150, -220, then=Stop.HOLD, wait=True)
 
-    robot.drive(-150, 5)
-    while robot.distance() < 200:
+    robot.drive(50, -2)
+    while True:
         #somehow blue line is not found
         #ev3.screen.draw_text(20, 20, sUltra.distance())
+
         if sTLeft.pressed():
+            ev3.screen.clear()
+            ev3.screen.draw_text(20, 20, sTLeft.pressed())
             robot.stop()
-            robot.straight(+30)
+            robot.straight(-30)
+            robot.turn(-20)
+            robot.stop()
+            robot.drive(50,0)
+
+        if sTRight.pressed():
+            ev3.screen.clear()
+            ev3.screen.draw_text(20, 20, sTRight.pressed())
+            robot.stop()
+            robot.straight(-30)
             robot.turn(20)
             robot.stop()
-            robot.drive(-100,0)
-
+            robot.drive(50,0)
+        ev3.screen.clear()
         ev3.screen.draw_text(20, 20, sColor.color())
         if sColor.color() == Color.BLUE:
             robot.stop()
             break
 
     # robot.turn(10)
-
+    ev3.screen.clear()
+    ev3.screen.draw_text(20, 20, "done")
     robot.stop()
+    robot.settings(150, 150, 150, 150)
     #stop the robot at the end of bridge
     
 
