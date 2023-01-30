@@ -22,4 +22,5 @@ sTRight = TouchSensor(Port.S3)
 sTLeft = TouchSensor(Port.S4)
 
 # Write your program here.
+#mSensor.run_angle(150, -220, then=Stop.HOLD, wait=True)
 menu.main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
