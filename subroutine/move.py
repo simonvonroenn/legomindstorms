@@ -11,6 +11,15 @@ import time
 
 from subroutine.utils import straight
 
+def safeTurn(robot, DRIVE_SPEED, degrees):
+    sign = 1
+    if degrees < 0:
+        sign = -1
+    robot.drive(DRIVE_SPEED, sign * 26.666) # 40° in total
+    time.sleep(1.5)
+    robot.stop()
+    robot.turn(degrees - sign * 20) # mathematically it should be: degrees - sign * 40
+
 def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED):
     """Dives the robot to the wall.
 
@@ -33,7 +42,7 @@ def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED):
     ADJUSTMENT_PRECISION = 4
     TOLERANCE = 10
 
-    straight(ev3, robot, 200)
+    if straight(ev3, robot, 200): return
     # mSensor.run_target(100, -70)
     # while True:
     #     distToCenter = sUltra.distance() - CENTER_DISTANCE
@@ -44,18 +53,22 @@ def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED):
     
     # mSensor.run_target(100, 0)
     robot.turn(90)
-    straight(ev3, robot, 300)
-    robot.straight(-30)
+    if straight(ev3, robot, 300): return
+    if robot.straight(-50): return
     robot.turn(-90)
     robot.drive(DRIVE_SPEED + 100, 0)
     while True:
         if sTRight.pressed() or sTLeft.pressed():
             break
+        if Button.LEFT in ev3.buttons.pressed():
+            robot.stop()
+            return
+    robot.stop()
 
 def findBox(ev3, robot, sUltra, mSensor, DRIVE_SPEED):
     """Finds the box.
 
-    After hitting the wall, the robot turns around and drives back while searching for the box.
+    After hitting the side wall, the robot turns around, drives a little bit back and then drives forward and searches for the box.
 
     Parameters:
     ev3         --  ev3 brick
@@ -65,10 +78,10 @@ def findBox(ev3, robot, sUltra, mSensor, DRIVE_SPEED):
     DRIVE_SPEED --  speed at which the robot should drive
     """
 
-    robot.stop()
-    robot.drive(-DRIVE_SPEED, 26.666) # 40° in total
-    time.sleep(1.5)
-    robot.turn(180 - 40)
+    safeTurn(robot, -DRIVE_SPEED, 180)
+    robot.turn(50)
+    if straight(ev3, robot, -50): return
+    robot.turn(-50)
     mSensor.run_target(100, -70)
     robot.drive(DRIVE_SPEED, 0)
     while True:
@@ -76,6 +89,9 @@ def findBox(ev3, robot, sUltra, mSensor, DRIVE_SPEED):
             robot.stop()
             robot.straight(200)
             break
+        if Button.LEFT in ev3.buttons.pressed():
+            robot.stop()
+            return
     mSensor.run_target(100, 0)
 
 def moveBoxToCorner(ev3, robot):
@@ -88,15 +104,16 @@ def moveBoxToCorner(ev3, robot):
     robot   --  drive base
     """
 
-    robot.turn(90)
-    straight(ev3, robot, 800)
-    straight(ev3, robot, -50)
+    robot.turn(90) #MAKE SAFE TURN HERE
+    if straight(ev3, robot, 1000, 300): return
+    if straight(ev3, robot, -50): return
     robot.turn(-90)
-    straight(ev3, robot, 200)
+    if straight(ev3, robot, 200): return
     robot.turn(90)
-    straight(ev3, robot, 200)
+    if straight(ev3, robot, 200): return
+    if straight(ev3, robot, -20): return
     robot.turn(90)
-    straight(ev3, robot, 600)
+    if straight(ev3, robot, 1000, 300): return
 
 def goToNext(ev3, robot, sTRight, sTLeft, sColor, DRIVE_SPEED):
     """Drives to the exit.
@@ -113,23 +130,26 @@ def goToNext(ev3, robot, sTRight, sTLeft, sColor, DRIVE_SPEED):
     DRIVE_SPEED --  speed at which the robot should drive
     """
 
-    robot.drive(-DRIVE_SPEED, -26.666) # 40° in total
-    time.sleep(1.5)
-    robot.stop()
-    robot.turn(-(180 - 40))
+    safeTurn(robot, -DRIVE_SPEED, -180)
     robot.drive(DRIVE_SPEED, 0)
     while True:
         if sTRight.pressed() or sTLeft.pressed():
             break
-    robot.straight(-50)
-    robot.turn(-90)
-    robot.straight(200)
+        if Button.LEFT in ev3.buttons.pressed():
+            robot.stop()
+            return
+    if robot.straight(-100): return
+    safeTurn(robot, DRIVE_SPEED, -90)
+    if robot.straight(200): return
     robot.turn(90)
     robot.drive(DRIVE_SPEED, 0)
     while True:
         if sColor.color() == Color.BLUE:
             robot.stop()
             break
+        if Button.LEFT in ev3.buttons.pressed():
+            robot.stop()
+            return
 
 def move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     """The main method of this subroutine.
@@ -149,7 +169,7 @@ def move_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     """
 
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
-    DRIVE_SPEED = 100
+    DRIVE_SPEED = 150
     robot.settings(DRIVE_SPEED, 200, 200, 200)
 
     driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED)
