@@ -84,11 +84,11 @@ def search_main(ev3, mLeft, mRight, sColor):
     SPOT_WIDTH = 70     # in millimeters
     TURN_OFFSET = 150
     
-    turn_left_triangle(robot)
 
     # 1
+    robot.drive(50, 0)
+    time.sleep(3) # Prevents scanning the blue line. '-150' in searchSpots() to counterbalance this sleep
     robot.drive(DRIVE_SPEED, 0)
-    time.sleep(1) # Prevents scanning the blue line. '-150' in searchSpots(ev3, ) to counterbalance this sleep
     if searchSpots(ev3, robot, sColor, ROOM_LENGTH + 50 - 150, 0, 1, 0): return
     turn_left_triangle(robot)
     # 2

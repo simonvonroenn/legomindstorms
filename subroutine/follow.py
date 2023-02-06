@@ -13,6 +13,7 @@ RIGHT_ANGLE = 90 #deg
 global stop
 stop = False
 
+
 def stop_func(ev3):
     if Button.LEFT in ev3.buttons.pressed():
         return True
@@ -36,14 +37,14 @@ def box_subroutine(ev3, sColor, robot):
     robot.turn(60)# - 45)
     robot.straight(200)
     robot.turn(-60)
-    robot.straight(-50)
+    robot.straight(-100)
     #robot.turn(-RIGHT_ANGLE)
     robot.reset()
     robot.drive(100,0)
-    while True:
-        if sColor.color() == Color.BLUE or robot.distance() > 20:
-            robot.stop()
-            break
+    # while True:
+    #     if sColor.color() == Color.BLUE or robot.distance() > 20:
+    #         robot.stop()
+    #         break
 
     #robot.turn(-45)
 
@@ -172,9 +173,12 @@ def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):
 
         robot.drive(200, turn_rate)
         while True:
+            if found_blue(sColor):
+                return
             if sTLeft.pressed() or sTRight.pressed():
                 box_subroutine(ev3, sColor, robot)
-                return
+                if found_blue(sColor):
+                    return
             if error > 17:
                 robot.stop()
                 break
@@ -184,7 +188,9 @@ def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):
 
 
 def found_blue(sColor):
-    if sColor.color() == Color.BLUE:
+    color = sColor.rgb()
+    reference = [2,12,10]
+    if color[2] > 80.0 and color[1] < 30.0 and color[0] < 30.0:
         print("blue")
         return True
     else:

@@ -8,7 +8,7 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
 
-def stay_on_section(robot, sUltra, sColor, direction, section_length, blue=False, speed=150):
+def stay_on_section(robot, sUltra, sColor, direction, section_length, blue=False, speed=150, turn_angle=-12):
     """Stays on the section of the bridge.
     The robot drives with a slight angle towards the side of the ultra sonic sensor.
     If the ultra sonic sensor detects an edge, the robot turns slightly into the opposite direction.
@@ -42,7 +42,7 @@ def stay_on_section(robot, sUltra, sColor, direction, section_length, blue=False
         #adjust robot angle if it is near the right edge
         if sUltra.distance() > ultra_threshold and  (robot.distance() - prev) * direction >= thresh_dist:
             robot.stop()
-            robot.turn(-12*direction)
+            robot.turn(turn_angle*direction)
             if blue:
                 robot.stop()
                 return
@@ -83,7 +83,7 @@ def stay_on_bridge(robot, sUltra, sColor, direction, section_length, speed=150):
         #adjust robot angle if it is near the right edge
         if sUltra.distance() > ultra_threshold and  (robot.distance() - prev) * direction >= thresh_dist:
             robot.stop()
-            robot.turn(-10 *direction)
+            robot.turn(turn_angle *direction)
             prev = robot.distance()          
             robot.drive(speed*direction,3 *direction)
     robot.stop()
@@ -123,14 +123,14 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     #stay on track while driving reverse upwards
     #makes problems => try hardcoded variant
     #stay_on(robot, sUltra, sColor, -1, False)
-    stay_on_section(robot, sUltra, sColor, -1, ramp_length + 70, speed=50)
+    stay_on_section(robot, sUltra, sColor, -1, ramp_length + 100, speed=50, turn_angle=-17)
     #fake right turn, afterward straight
     #return
     robot.turn(-20)
     robot.straight(30)
     robot.turn(-30)
     robot.straight(30)
-    robot.turn(-45)
+    robot.turn(-53)
 
     print("after first")
 
@@ -138,7 +138,7 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     #robot.turn(180)
     #stay on track until next 90 deg turn
     #stay_on(robot, sUltra, sColor, 1,False)
-    stay_on_section(robot, sUltra, sColor, 1, bridge_length)
+    stay_on_section(robot, sUltra, sColor, 1, bridge_length - 10)
     #robot.straight(-70)
     robot.turn(90)
     #stay on track until blue line
@@ -160,8 +160,13 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             ev3.screen.clear()
             ev3.screen.draw_text(20, 20, sTLeft.pressed())
             robot.stop()
-            robot.straight(-30)
-            robot.turn(-20)
+            #robot.straight(-30)
+            robot.reset()
+            robot.drive(-50,-4)
+            while robot.distance() > -100:
+                robot.drive(-50,-4)
+
+            robot.turn(-30)
             robot.stop()
             robot.drive(50,0)
 
@@ -169,8 +174,12 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             ev3.screen.clear()
             ev3.screen.draw_text(20, 20, sTRight.pressed())
             robot.stop()
-            robot.straight(-30)
-            robot.turn(20)
+            # robot.straight(-30)
+            robot.reset()
+            robot.drive(-50,4)
+            while robot.distance() > -100:
+                robot.drive(-50,-4)
+            robot.turn(30)
             robot.stop()
             robot.drive(50,0)
         ev3.screen.clear()

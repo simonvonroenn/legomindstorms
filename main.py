@@ -30,4 +30,8 @@ sTLeft = TouchSensor(Port.S4)
 #     if sTLeft.pressed():
 #         ev3.screen.clear()
 #         ev3.screen.draw_text(20, 20, "left")
+# while True:
+#     ev3.screen.clear()
+#     ev3.screen.draw_text(20, 20,sColor.rgb())
+#     a = 4 * 0.5 **5 -10 +74 (2,12,10)
 menu.main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft)
