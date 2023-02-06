@@ -123,7 +123,7 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
     #stay on track while driving reverse upwards
     #makes problems => try hardcoded variant
     #stay_on(robot, sUltra, sColor, -1, False)
-    stay_on_section(robot, sUltra, sColor, -1, ramp_length + 100, speed=50, turn_angle=-17)
+    stay_on_section(robot, sUltra, sColor, -1, ramp_length + 80, speed=50, turn_angle=-17)
     #fake right turn, afterward straight
     #return
     robot.turn(-20)
@@ -166,7 +166,7 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             while robot.distance() > -100:
                 robot.drive(-50,-4)
 
-            robot.turn(-30)
+            robot.turn(-20)
             robot.stop()
             robot.drive(50,0)
 
@@ -179,7 +179,7 @@ def bridge_main(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             robot.drive(-50,4)
             while robot.distance() > -100:
                 robot.drive(-50,-4)
-            robot.turn(30)
+            robot.turn(20)
             robot.stop()
             robot.drive(50,0)
         ev3.screen.clear()

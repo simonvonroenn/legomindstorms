@@ -10,6 +10,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 import math
 import time
 
+from subroutine.utils import straight
 
 foundRed = False
 foundWhite = False
@@ -43,6 +44,9 @@ def searchSpots(ev3, robot, sColor, ROOM_LENGTH, SPOT_WIDTH, time, TURN_OFFSET):
             if foundRed and foundWhite:
                 robot.stop()
                 return True
+        if Button.LEFT in ev3.buttons.pressed():
+            robot.stop()
+            return True
     return False
 
 def turn_left_triangle(robot):
@@ -58,6 +62,7 @@ def turn_left_triangle(robot):
     DRIVE_SPEED = 75
 
     robot.stop()
+    robot.straight(-10)
     robot.drive(-DRIVE_SPEED, -30) # mathematically it should be -26.666
     time.sleep(1.5)
     robot.drive(DRIVE_SPEED, 97.5) # mathematically it should be 86.666
@@ -83,13 +88,20 @@ def search_main(ev3, mLeft, mRight, sColor):
     ROOM_LENGTH = 900   # in millimeters
     SPOT_WIDTH = 70     # in millimeters
     TURN_OFFSET = 150
-    
 
     # 1
     robot.drive(50, 0)
-    time.sleep(3) # Prevents scanning the blue line. '-150' in searchSpots() to counterbalance this sleep
+    time.sleep(4) # Prevents scanning the blue line. '-200' in searchSpots() to counterbalance this sleep
+
+    robot.drive(100, 45) # another '-100' in searchSpots()
+    time.sleep(2)
+    robot.stop()
+    if straight(ev3, robot, -200): return
+    if straight(ev3, robot, 20): return
+    robot.turn(-90)
+
     robot.drive(DRIVE_SPEED, 0)
-    if searchSpots(ev3, robot, sColor, ROOM_LENGTH + 50 - 150, 0, 1, 0): return
+    if searchSpots(ev3, robot, sColor, ROOM_LENGTH + 50 - 200 - 100, 0, 1, 0): return
     turn_left_triangle(robot)
     # 2
     robot.drive(DRIVE_SPEED, 0)

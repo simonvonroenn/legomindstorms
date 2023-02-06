@@ -89,7 +89,7 @@ def findBox(ev3, robot, sUltra, mSensor, DRIVE_SPEED):
     while True:
         if sUltra.distance() < 500:
             robot.stop()
-            if straight(ev3, robot, 300): return
+            if straight(ev3, robot, 200): return # sometimes more than 200 is needed
             break
         if Button.LEFT in ev3.buttons.pressed():
             robot.stop()
@@ -106,7 +106,6 @@ def moveBoxToCorner(ev3, robot, DRIVE_SPEED):
     robot   --  drive base
     """
 
-    #safeTurn(robot, -100, 90)
     for i in range(9):
         robot.drive(-50, 20)
         time.sleep(0.5)
