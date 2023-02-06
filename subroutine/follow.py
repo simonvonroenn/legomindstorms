@@ -21,29 +21,48 @@ def stop_func(ev3):
 
 #box subroutine
 def box_subroutine(ev3, sColor, robot):
+    """Drives around the box and makes sure to continue following the line 
+    Parameters:
+    ev3         --  ev3
+    robot       --  the drive base
+    sColor      --  the color sensor
+    """
     print("search box")
     robot.straight(-40)
     robot.turn(-RIGHT_ANGLE)
     robot.straight(200)
     robot.turn(RIGHT_ANGLE)
     robot.straight(350)
-    robot.turn(RIGHT_ANGLE - 45)
-    
+    robot.turn(60)# - 45)
+    robot.straight(200)
+    robot.turn(-60)
+    robot.straight(-50)
+    #robot.turn(-RIGHT_ANGLE)
+    robot.reset()
     robot.drive(100,0)
     while True:
-        if sColor.color() ==  Color.BLUE:
+        if sColor.color() == Color.BLUE or robot.distance() > 20:
             robot.stop()
             break
 
-    robot.turn(-45)
+    #robot.turn(-45)
 
 def gap_subroutine(ev3, color_sensor, mLeft, mRight):
+    """Handles refinding the line and gaps in the track.
+    Tries to find the line again using increments of left and right turns.
+    If line was not found, drive forward and try again
+    Parameters:
+    ev3         --  ev3
+    mLeft       --  left motor
+    mRight      --  right motor 
+    color_sensor      --  the color sensor
+    """
     #drivebase settings
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
     robot.settings(200, 200, 200, 200)
    
-    threshold_l = 25
-    threshold_r = 19
+    threshold_l = 23
+    threshold_r = 15
 
     #normal turns
     angles = [20, 70]
@@ -58,7 +77,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
             if color_sensor.reflection() >= threshold_l:
                 robot.stop()
                 #line was found, return to line following subroutine
-                return
+                return i * 2
             elif robot.angle() >= i:
                 ev3.screen.print(robot.angle())
                 robot.stop()
@@ -71,7 +90,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
             if color_sensor.reflection() >= threshold_r:
                 robot.stop()
                 #line was found, return to line following subroutine
-                return
+                return -i * 2
             elif robot.angle() <= -i:
                 #ev3.screen.print(robot.angle())
                 robot.stop()
@@ -90,7 +109,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
                 line_found = True
                 robot.stop()
                 #line was found, return to line following subroutine
-                return
+                return 0
             elif robot.angle() <= -20:
                 #ev3.screen.print(robot.angle())
                 robot.reset()
@@ -100,7 +119,7 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
     while robot.angle() <= 120:
         if color_sensor.reflection() >= threshold_l:
             robot.stop()
-            return
+            return 0
     robot.stop()
 
 
@@ -111,13 +130,25 @@ def gap_subroutine(ev3, color_sensor, mLeft, mRight):
         if color_sensor.reflection() >= threshold_l:
             robot.stop()
             break
+    return 0
          
         
 
 
    
 
-def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):  
+def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):
+    """Handles following the line.
+    Main part of line following. Tries to stay on the line by detecting curves and driving accordingly.
+    Detects if line is lost.
+    Parameters:
+    ev3         --  ev3
+    mLeft       --  left motor
+    mRight      --  right motor 
+    sColor      --  the color sensor
+    sTRight     --  right touch sensor
+    sTLeft      --  left touch sensor
+    """
     # initial measurment
     target_value = 30#35
     brown = 8
@@ -130,6 +161,7 @@ def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):
     eps = 1
     print(sColor.reflection())
     robot = DriveBase(mLeft, mRight, wheel_diameter=43, axle_track=125)
+    turn_rate = 0
     while True:
         robot.stop()
 
@@ -138,16 +170,17 @@ def line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft):
         if stop_func(ev3):
             return
 
-        robot.drive(200, 0)
+        robot.drive(200, turn_rate)
         while True:
             if sTLeft.pressed() or sTRight.pressed():
                 box_subroutine(ev3, sColor, robot)
                 return
-            if error > 10:
+            if error > 17:
                 robot.stop()
                 break
             error = target_value - sColor.reflection()
-        gap_subroutine(ev3, sColor, mLeft, mRight)
+        new_turn = gap_subroutine(ev3, sColor, mLeft, mRight)
+        turn_rate = turn_rate + new_turn if (new_turn > 0 and (turn_rate * new_turn >= 0))  else new_turn
 
 
 def found_blue(sColor):
@@ -164,6 +197,13 @@ def program_aborted():
         return False
 
 def line_follower(ev3, mLeft, mRight, sColor):
+    """Deprecated version of line-following
+    Parameters:
+    ev3         --  ev3
+    mLeft       --  left motor
+    mRight      --  right motor 
+    color_sensor      --  the color sensor
+    """
     ev3.speaker.beep()
     robot = DriveBase(mLeft, mRight, wheel_diameter=55.5, axle_track=104)
     touchL = TouchSensor(Port.S3)
