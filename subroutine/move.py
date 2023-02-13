@@ -12,13 +12,23 @@ import time
 from subroutine.utils import straight
 
 def safeTurn(robot, DRIVE_SPEED, degrees):
+    """Makes a safe turn.
+
+    The robots drives a bit away from the wall before rotating,
+    to assure that the robot doesn't touch the wall.
+
+    Parameters:
+    robot       -   drive base
+    DRIVE_SPEED -   speed at which the robot should drive
+    degrees     -   amount of degrees the robot should rotate in total
+    """
     sign = 1
     if degrees < 0:
         sign = -1
     robot.drive(DRIVE_SPEED, sign * 40)
-    time.sleep(1)
+    time.sleep(1.5)
     robot.stop()
-    robot.turn(degrees - sign * 20) # mathematically it should be: degrees - sign * 40
+    robot.turn(degrees - sign * 60) # mathematically it should be: degrees - sign * 60
 
 def driveToWall(ev3, robot, sTRight, sTLeft, sUltra, mSensor, DRIVE_SPEED):
     """Dives the robot to the wall.
@@ -89,7 +99,7 @@ def findBox(ev3, robot, sUltra, mSensor, DRIVE_SPEED):
     while True:
         if sUltra.distance() < 500:
             robot.stop()
-            if straight(ev3, robot, 200): return # sometimes more than 200 is needed
+            if straight(ev3, robot, 180): return # sometimes more than 180 is needed
             break
         if Button.LEFT in ev3.buttons.pressed():
             robot.stop()
@@ -104,6 +114,7 @@ def moveBoxToCorner(ev3, robot, DRIVE_SPEED):
     Parameters:
     ev3     --  ev3 brick
     robot   --  drive base
+    DRIVE_SPEED --  speed at which the robot should drive
     """
 
     for i in range(9):
@@ -125,7 +136,7 @@ def moveBoxToCorner(ev3, robot, DRIVE_SPEED):
     if straight(ev3, robot, 200): return
     robot.turn(90)
     if straight(ev3, robot, 200): return
-    if straight(ev3, robot, -10): return
+    if straight(ev3, robot, -30): return
     robot.turn(90)
     
     if straight(ev3, robot, 400, 300): return
@@ -160,8 +171,14 @@ def goToNext(ev3, robot, sTRight, sTLeft, sColor, DRIVE_SPEED):
             robot.stop()
             return
     if robot.straight(-100): return
-    safeTurn(robot, DRIVE_SPEED, -90)
-    if robot.straight(-100): return
+
+    for i in range(9):
+        robot.drive(50, -20)
+        time.sleep(0.5)
+        robot.stop()
+        if straight(ev3, robot, -25, 50): return
+    
+    if robot.straight(-200): return
     if robot.straight(200): return
     robot.turn(90)
     robot.drive(100, 0)
