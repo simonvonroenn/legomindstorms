@@ -28,7 +28,6 @@ def box_subroutine(ev3, sColor, robot):
     robot       --  the drive base
     sColor      --  the color sensor
     """
-    print("search box")
     robot.reset()
     robot.stop()
     robot.settings(200, 200, 200, 200)
@@ -37,10 +36,10 @@ def box_subroutine(ev3, sColor, robot):
     robot.straight(200)
     robot.turn(RIGHT_ANGLE)
     robot.straight(350)
-    robot.turn(60)# - 45)
+    robot.turn(55)# - 45)
     robot.straight(200)
-    robot.turn(-60)
-    robot.straight(-100)
+    robot.turn(-55)
+    robot.straight(-60)
     #robot.turn(-RIGHT_ANGLE)
     robot.reset()
     robot.drive(100, 0)
