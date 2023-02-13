@@ -47,8 +47,10 @@ def main_menu(ev3, mLeft, mRight, mSensor, sColor, sUltra, sTRight, sTLeft):
             resume = False
             if sections[selec] is 'FOLLOW':
                 ev3.screen.clear()
+                mSensor.run_target(100, -140, then=Stop.HOLD, wait=True)
                 ev3.screen.print("Following line")
                 line_follower_controller(ev3, mLeft, mRight, sColor, sTRight, sTLeft)
+                mSensor.run_target(100, 0, then=Stop.HOLD, wait=True)
                 resume = True
             if sections[selec] is 'MOVE' or resume:
                 ev3.screen.clear()
